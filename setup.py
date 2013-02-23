@@ -14,6 +14,7 @@ setup(name='genepi',
       license='MIT',
       packages=['genepi'],
       install_requires=[],
-      test_suite='nose.collector',
       tests_require=['nose'],
+      #maybe a bug: https://github.com/nose-devs/nose/issues/629
+      #test_suite='nose.collector',
       zip_safe=False)
