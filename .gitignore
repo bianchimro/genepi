@@ -9,4 +9,4 @@
 /*.egg-info
 
 # My virtual environment
-env/*
+/env/
