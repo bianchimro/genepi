@@ -1,4 +1,14 @@
 from copy import copy, deepcopy
+import random
+
+#TODO: move to SELECTORS module
+def select_from_top(sorted_individuals, num_individuals):
+    return sorted_individuals[:num_individuals]
+
+#TODO: move to CROSSOVER module    
+def genome_add(genome_a, genome_b):
+    return genome_a + genome_b
+    
 
 class Population(object):
     """A population is a collection of individuals"""
@@ -6,15 +16,35 @@ class Population(object):
     individuals = []
     size = 100
 
-    def __init__(self, protogenome, size=100, optimization_mode='min', **kwargs):
+    def __init__(self, protogenome, size=100, 
+        optimization_mode='min', 
+        crossover_method=None,
+        selection_method=None, 
+        **kwargs):
         
         self.protogenome = protogenome
         self.size = size
         self.optimization_mode=optimization_mode
         
+        #TODO: parametrize
+        #number of selected parents
+        self.num_parents = 2
+        #elitism
+        self.elitism = True
+        
+        #selection method
+        if not selection_method:
+            selection_method = select_from_top
+        self.selection_method=selection_method    
+        
+        #crossover method
+        if not crossover_method:
+            crossover_method = genome_add
+        self.crossover_method=crossover_method
+        
         self.generation_number = 0
         self.sorted = False
-    
+        
     
     def initialize(self, individuals=[]):
         new_individuals = []
@@ -34,18 +64,51 @@ class Population(object):
         """In place mutation for the population"""
         for individual in self.individuals:
             individual.mutate()
+            
+    def select_individuals(self):
+        return self.selection_method(self.individuals, self.num_parents)
     
+    
+    def fit_individuals(self, fitness_evaluator, cache=None, eval_callback= None):
+        for individual in self.individuals:
+            hash = individual.get_hash()
+            if cache:
+                score = cache.get_score(hash)
+            else:
+                score = None
+            if not score:
+                score = fitness_evaluator(individual)
+                if cache:
+                    cache.set_score(hash, score)
+            individual.score = score
+            if eval_callback:
+                eval_callback(hash, individual)
+    
+        self.sort()
+        
             
     def evolve(self):
-        new_population = self.copy()
-        #select offsprings
+        new_individuals = []
+        num_individuals = 0
         
-        
-        new_population.mutate()
-
+        parents_candidates = self.select_individuals()
+        if self.elitism:
+            for individual in parents_candidates:
+                new_individuals.append(individual.copy())
+            
+        while num_individuals < self.size:
+            #breeding and crossover
+            parents = random.sample(parents_candidates, 2)
+            new_individual = self.crossover_method(parents[0], parents[1])
+            #mutation
+            new_individual.mutate()
+            new_individuals.append(individual)
+            num_individuals += 1
+    
+        new_population = self.copy(individuals=new_individuals)
         
         new_population.generation_number = self.generation_number + 1
-        return new_population()
+        return new_population
         
     def cmp_individual(self, a, b):
         #TODO: document, this is a bit tricky
@@ -65,15 +128,16 @@ class Population(object):
         return self.individuals[0]
         
         
-    def copy(self):
-        individuals = []
-        for individual in self.individuals:
-            new_individual = individual.copy()
-            individuals.append(new_individual)
+    def copy(self, individuals=[]):
+        if not individuals:
+            for individual in self.individuals:
+                new_individual = individual.copy()
+                individuals.append(new_individual)
         
         pop = Population(self.protogenome, self.size, 
             optimization_mode=self.optimization_mode)
         pop.initialize(individuals)
+        return pop
         
         
         

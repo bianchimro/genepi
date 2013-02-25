@@ -29,6 +29,24 @@ class GenomeTest(unittest.TestCase):
         genome = Genome(self.genes_dict)
         genome.get_hash()
         
+    def test_mutate(self):
+        genome = Genome(self.genes_dict, mutation_probability=1)
+        has_mutated = genome.mutate()
+        assert has_mutated == True
+        genome_b = Genome(self.genes_dict, mutation_probability=0)
+        has_mutated = genome_b.mutate()
+        assert has_mutated == False
+        
+    def test_add(self):
+        genome_a = Genome(self.genes_dict)
+        genome_a.score = 1
+        genome_b = Genome(self.genes_dict)
+        genome_b.score = 2
+        genome_c = genome_a + genome_b
+        assert genome_c.score is None
+
+        
+        
     def test_to_json(self):
         genome = Genome(self.genes_dict)
         genome.to_json()

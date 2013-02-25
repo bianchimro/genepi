@@ -73,21 +73,15 @@ class GeneticAlgorithm(object):
                 
         return False
         
-        
-    def evaluate_population(self):
-        for individual in self.population:
-            hash = individual.get_hash()
-            score = self.cache.get_score(hash)
-            if not score:
-                score = self.fitness_evaluator(individual)
-                self.cache.set_score(hash, score)
-            individual.score = score
-    
+    def store_individual(self, hash, individual):
         if self.storage:    
             self.storage.write_individual(hash, self.generation, individual )
-    
-        self.population.sort()
+
+        
+    def evaluate_population(self):
+        self.population.fit_individuals(self.fitness_evaluator, self.cache, eval_callback=self.store_individual)
         self.stat_population()
+        
         
     def stat_population(self):
         #TODO: implement

@@ -4,6 +4,7 @@ from genepi.core.genome import Genome
 from genepi.core.gene import IntGene
 from genepi.core.protogene import ProtoGene
 from genepi.core.protogenome import ProtoGenome
+from genepi.cache.base import DictCache
 
 class PopulationTest(unittest.TestCase):
 
@@ -61,4 +62,42 @@ class PopulationTest(unittest.TestCase):
         best_ind = pop.best_individual()
         assert pop.individuals[0].score == best_ind.score == 0
         assert pop.individuals[0].get_hash() == best_ind.get_hash()
+        
+        
+    def test_fit_individuals(self):
+        protogene_a = ProtoGene(IntGene, 'a', value=1)
+        protogenome = ProtoGenome([protogene_a])
+        pop = Population(protogenome, optimization_mode='min')
+        pop.initialize()    
+        def fitness_evaluator(g):
+            return g.get_value('a')
+        pop.fit_individuals(fitness_evaluator)
+        for individual in pop.individuals:
+            assert individual.score == 1
+        
+        dict_cache = DictCache()
+        pop.fit_individuals(fitness_evaluator, cache=dict_cache)
+        for individual in pop.individuals:
+            assert individual.score == 1
+            
+        self.total_score = 0
+        def eval_callback(hash, individual):
+            self.total_score += individual.score
+            
+        pop.fit_individuals(fitness_evaluator, cache=dict_cache, eval_callback=eval_callback)
+        assert self.total_score == pop.size
+        
+    
+    def test_evolve(self):
+        protogene_a = ProtoGene(IntGene, 'a', value=1)
+        protogenome = ProtoGenome([protogene_a])
+        pop = Population(protogenome, optimization_mode='min')
+        pop.initialize()
+        
+        def fitness_evaluator(g):
+            return g.get_value('a')
+        pop.fit_individuals(fitness_evaluator)    
+        new_population = pop.evolve()
+        
+        
         

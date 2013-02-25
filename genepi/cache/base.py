@@ -26,6 +26,8 @@ class NoCache(BaseCache):
         
 class DictCache(BaseCache):
     """Simple Dictionary cache"""
+    data = {}
+    
     def initialize(self):
         self.data = {}
         

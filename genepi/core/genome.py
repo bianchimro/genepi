@@ -25,6 +25,11 @@ class Genome(object):
             out.append(self.genes_dict[name].value)
         return out        
         
+
+    def get_value(self, key):
+        return self.genes_dict[key].value
+        
+        
     def get_hash(self):
         h = hashlib.md5()
         for name in self.genes_dict:
@@ -33,13 +38,13 @@ class Genome(object):
             
         return h.hexdigest()
     
-    def copy(self):
-        genes_dict = OrderedDict()
-        for x in self.genes_dict:
-            genes_dict[x] = self.genes_dict[x].copy()
+    def copy(self, genes_dict=None):
+        if genes_dict is None:
+            genes_dict = OrderedDict()
+            for x in self.genes_dict:
+                genes_dict[x] = self.genes_dict[x].copy()
         new_genome = Genome(genes_dict)
         new_genome.score = self.score
-        new_genome.value = self.value
         new_genome.mutation_probability = self.mutation_probability
         return new_genome
         
@@ -58,10 +63,23 @@ class Genome(object):
     
     def should_mutate(self, gene):
         return self.should_mutate_uniform_probability()
+    
+    def __add__(self, other):
+        genes_dict = OrderedDict()
+        for name in self.genes_dict:
+            gene = self.genes_dict[name]
+            other_gene = other.genes_dict[name]
+            genes_dict[name] = gene + other_gene
+
+        new_genome = self.copy(genes_dict=genes_dict)
+        new_genome.score = None
+        return new_genome
+            
         
         
     def mutate(self):
         """In place mutation"""
+        has_mutated = False
         for name in self.genes_dict:
             gene = self.genes_dict[name]
             if self.should_mutate(gene):
@@ -70,6 +88,7 @@ class Genome(object):
             #reset score in case of mutation
             if has_mutated:
                 self.score = None
+        return has_mutated
             
         
     

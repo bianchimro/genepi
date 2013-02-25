@@ -8,5 +8,5 @@ class ProtoGene(object):
         self.name = name
         
     def get_gene(self):
-        out =  self.gene_class(value=None, **self.kwargs)
+        out =  self.gene_class(**self.kwargs)
         return out
