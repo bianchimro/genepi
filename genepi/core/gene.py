@@ -8,7 +8,7 @@ Genes support the following python operators:
 These genes work via classical Mendelian genetics
 """
 
-import sys, new
+import sys
 from random import randrange, random, uniform, choice,seed
 from math import sqrt
 from copy import copy, deepcopy
@@ -217,9 +217,9 @@ class DiscreteGene(BaseGene):
     """
     
     def __init__(self, value=None, alleles=[]):
-        super(DiscreteGene, self).__init__(value=value)
+        
         self.alleles = alleles
-
+        super(DiscreteGene, self).__init__(value=value)
     
     def mutate(self):
         """
