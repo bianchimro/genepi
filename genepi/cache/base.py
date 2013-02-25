@@ -11,7 +11,7 @@ class BaseCache(object):
         raise NotImplementedError()
 
 
-class NoCache((BaseCache):
+class NoCache(BaseCache):
     """Implements the cache interface without doing nothing"""
 
     def initialize(self):
