@@ -58,7 +58,8 @@ class GeneticAlgorithm(object):
     def initialize(self):
         self.population.initialize()
         self.cache.initialize()
-        self.storage.initialize()
+        if self.storage:
+            self.storage.initialize()
         
         
     def should_terminate(self):

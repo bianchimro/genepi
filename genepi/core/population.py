@@ -1,5 +1,6 @@
 
 class Population(object):
+    """A population is a collection of individuals"""
 
     individuals = []
     size = 100
