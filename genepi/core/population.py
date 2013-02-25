@@ -17,5 +17,3 @@ class Population(object):
             self.individuals.append(individual)
             
     
-    def evolve(self):
-        pass

@@ -28,8 +28,7 @@ class BaseGene(object):
         # randomly generated
         if value == None:
             value = self.random_value()   
-        self.value = value
-        
+        self.value = value    
     
     def copy(self):
         """
@@ -44,18 +43,13 @@ class BaseGene(object):
         Must be overridden
         """
         raise NotImplementedError("Method __add__ must be overridden")
-
-    def __getitem__(self):
-        return self.value
-
     
     def mutate(self):
         """
         Perform a mutation on the gene        
         You MUST override this in subclasses
         """
-        raise Exception("method 'mutate' not implemented")
-
+        raise NotImplementedError("method 'mutate' not implemented")
     
     def random_value(self):
         """
@@ -66,11 +60,11 @@ class BaseGene(object):
         raise NotImplementedError("Method 'random_value' not implemented")
               
     def get_hash(self):
-        return self.__class__.__name__ + str(self.value)
+        return "%s_%s" % (self.__class__.__name__ , str(self.value))
     
 
     
-#mauro
+
 class FloatGene(BaseGene):
     """
     A gene whose value is a floating point number
@@ -88,16 +82,17 @@ class FloatGene(BaseGene):
     
     def __init__(self, value=None, min_value=-1.0, max_value = 1.0, mutation_speed=1.0):
         
-        if min_value == max_value:
+        if min_value > max_value:
             raise ValueError("Max value should be greater than min value")
         
         self.min_value = float(min_value)
         self.max_value = float(max_value)
-        self.mutation_speed = mutation_speed
+        self.mutation_speed = float(mutation_speed)
         if mutation_speed < 0 or mutation_speed > 1:
             raise ValueError("Mutation speed should be between 0 and 1")
-    
-        super(BaseGene, self).__init__(value=value)
+        if value:
+            value = float(value)
+        super(FloatGene, self).__init__(value=value)
     
     def __add__(self, other):
         """
@@ -132,31 +127,7 @@ class FloatGene(BaseGene):
         """
         return uniform(self.min_value, self.max_value)    
 
-class FloatGeneRandom(FloatGene):
-    """
-    Variant of FloatGene where mutation always randomises the value
-    """
-    def mutate(self):
-        """
-        Randomise the gene
-        perform mutation IN-PLACE, ie don't return mutated copy
-        """
-        self.value = self.random_value()
-    
 
-class FloatGeneMax(FloatGene):
-    """
-    phenotype of this gene is the greater of the values
-    in the gene pair
-    """
-    def __add__(self, other):
-        """
-        produces phenotype of gene pair, as the greater of this
-        and the other gene's values
-        """
-        return max(self.value, other.value)
-    
-#mauro
 class IntGene(BaseGene):
     """
     Implements a gene whose values are ints,
@@ -166,7 +137,9 @@ class IntGene(BaseGene):
     def __init__(self, value=None,
                 min_value=-sys.maxint, max_value= sys.maxint + 1,
                 mutation_range = 100):
-        
+        if min_value > max_value:
+            raise ValueError("Max value should be greater than min value")
+            
         self.min_value = min_value
         self.max_value = max_value
         self.mutation_range = mutation_range
@@ -205,6 +178,8 @@ class IntGene(BaseGene):
         """
         mean_value = int((self.value + other.value) / 2)
         new_value = choice([mean_value, self.value, other.value])
+        return IntGene(value=new_value, min_value=self.min_value, max_value=self.max_value,
+                    mutation_range = self.mutation_range)
 
 
 class DiscreteGene(BaseGene):
@@ -219,6 +194,8 @@ class DiscreteGene(BaseGene):
     def __init__(self, value=None, alleles=[]):
         
         self.alleles = alleles
+        if value is not None and value not in alleles:
+            raise ValueError("Provided value must be in alleles")
         super(DiscreteGene, self).__init__(value=value)
     
     def mutate(self):
