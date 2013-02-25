@@ -84,20 +84,8 @@ class BaseGene(object):
         for this gene.        
         Must be overridden
         """
-        raise Exception("Method 'randomValue' not implemented")
-      
-    def xmlDumpSelf(self, doc, parent):
-        """
-        dump out this gene into parent tag
-        """
-        pass
-    
-    def xmlDumpAttribs(self, tag):
-        """
-        sets attributes of tag
-        """
-        pass
-        
+        raise NotImplementedError("Method 'randomValue' not implemented")
+              
     def get_hash(self):
         return self.__class__.__name__ + str(self.value)
     
