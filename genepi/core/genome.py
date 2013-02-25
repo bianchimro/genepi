@@ -1,7 +1,10 @@
 import hashlib
 import json
-from collections import OrderedDict
 import random
+try:
+    from collections import OrderedDict
+except:
+    from genepi.utils.ordereddict import OrderedDict
 
 class Genome(object):
     """Genome is a collection of genes"""

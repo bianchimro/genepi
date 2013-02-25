@@ -1,5 +1,9 @@
-from collections import OrderedDict
 from genome import Genome
+try:
+    from collections import OrderedDict
+except:
+    from genepi.utils.ordereddict import OrderedDict
+
 
 class ProtoGenome(object):
     """

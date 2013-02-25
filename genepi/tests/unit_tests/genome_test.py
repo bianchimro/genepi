@@ -1,7 +1,11 @@
 import unittest
-from collections import OrderedDict
 from genepi.core.genome import Genome
 from genepi.core.gene import IntGene
+try:
+    from collections import OrderedDict
+except:
+    from genepi.utils.ordereddict import OrderedDict
+
 
 class GenomeTest(unittest.TestCase):
 
