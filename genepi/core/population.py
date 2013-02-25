@@ -17,7 +17,6 @@ class Population(object):
     
     
     def initialize(self, individuals=[]):
-        
         new_individuals = []
         for individual in individuals:
             new_individual = individual.copy()
@@ -29,9 +28,24 @@ class Population(object):
         for x in range(start_index, self.size):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
+    
+    
+    def mutate(self):
+        """In place mutation for the population"""
+        for individual in self.individuals:
+            individual.mutate()
+    
             
     def evolve(self):
-        pass
+        new_population = self.copy()
+        #select offsprings
+        
+        
+        new_population.mutate()
+
+        
+        new_population.generation_number = self.generation_number + 1
+        return new_population()
         
     def cmp_individual(self, a, b):
         #TODO: document, this is a bit tricky

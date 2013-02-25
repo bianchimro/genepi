@@ -105,7 +105,7 @@ class GeneticAlgorithm(object):
     def evolve_population(self):
         new_population = self.population.evolve()
         self.population = new_population
-        self.generation += 1  
+        self.generation = new_population.generation_number
          
     
     def evolve(self):
