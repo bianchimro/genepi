@@ -1,4 +1,5 @@
 import hashlib
+import json
 from collections import OrderedDict
 
 class Genome(object):
@@ -30,6 +31,11 @@ class Genome(object):
             h.update(gene.get_hash())
             
         return h.hexdigest()
+        
+        
+    def to_json(self):
+        dict_value = self.dict_value()
+        json.dumps(dict_value)
             
         
     

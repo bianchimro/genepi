@@ -81,8 +81,10 @@ class GeneticAlgorithm(object):
                 score = self.fitness_evaluator(individual)
                 self.cache.set_score(hash, score)
             individual.score = score
-        
-        self.storage.put_individual(hash, individual, self.generation)
+    
+        if self.storage:    
+            self.storage.write_individual(hash, self.generation, individual )
+    
         self.population.sort(self.optimization_mode)
         self.stat_population()
         
@@ -90,7 +92,8 @@ class GeneticAlgorithm(object):
         """stats for current population: min max average"""
         stats = {}
         self.population_stats[self.generation] = stats
-        self.storage.put_population_stats(self.generation, stats)
+        if self.storage:
+            self.storage.write_population_stats(self.generation, stats)
         
 
     def best_individual(self):

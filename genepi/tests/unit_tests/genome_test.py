@@ -28,3 +28,7 @@ class GenomeTest(unittest.TestCase):
     def test_get_hash(self):
         genome = Genome(self.genes_dict)
         genome.get_hash()
+        
+    def test_to_json(self):
+        genome = Genome(self.genes_dict)
+        genome.to_json()
