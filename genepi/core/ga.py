@@ -1,11 +1,11 @@
 """Contains genetic algorithm glasses"""
 
 from genepi.core.population import Population
+from genepi.cache.base import BaseCache, DictCache
 
 class GeneticAlgorithm(object):
     """Genetic algorithm class"""
     
-
     population_size = 100
     selection_method = None
     step_callback = None
@@ -27,7 +27,8 @@ class GeneticAlgorithm(object):
                     step_callback=None,
                     mutation_probability=0,
                     crossover_probability=0,
-                    crossover_method=None):
+                    crossover_method=None,
+                    cache_instance=None):
 
         self.protogenome = protogenome
         self.fitness_evaluator = fitness_evaluator
@@ -47,6 +48,11 @@ class GeneticAlgorithm(object):
             mutation_probability=self.mutation_probability)
 
         self.generation = 0
+        
+        if cache_instance is None:
+            self.cache = DictCache()
+        else:
+            self.cache = cache_instance
         
     
     def initialize(self):
