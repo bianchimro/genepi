@@ -53,6 +53,7 @@ class SqliteStorage(BaseStorage):
                 query = '''INSERT INTO POPULATION (hash, generation, individual, score) VALUES(?,?,?,?)'''
                 c.execute(query, (hash, generation, individual.to_json(), individual.score))            
             """
+            conn.commit()
         except:
             raise
         finally:
