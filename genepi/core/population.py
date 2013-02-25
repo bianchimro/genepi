@@ -1,3 +1,4 @@
+from copy import copy, deepcopy
 
 class Population(object):
     """A population is a collection of individuals"""
@@ -15,19 +16,26 @@ class Population(object):
         self.sorted = False
     
     
-    def initialize(self):
-        for x in range(self.size):
+    def initialize(self, individuals=[]):
+        
+        new_individuals = []
+        for individual in individuals:
+            new_individual = individual.copy()
+            new_individuals.append(new_individual)
+
+        self.individuals = new_individuals
+        start_index = len(self.individuals)
+        
+        for x in range(start_index, self.size):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
             
-    
     def evolve(self):
         pass
         
-        
     def cmp_individual(self, a, b):
         #TODO: document, this is a bit tricky
-        if self.optimization_mode == 'max':
+        if self.optimization_mode == 'min':
             return cmp(a.score, b.score)
         else:
             return cmp(b.score, a.score)
@@ -41,6 +49,18 @@ class Population(object):
         if not self.sorted:
             self.sort()
         return self.individuals[0]
+        
+        
+    def copy(self):
+        individuals = []
+        for individual in self.individuals:
+            new_individual = individual.copy()
+            individuals.append(new_individual)
+        
+        pop = Population(self.protogenome, self.size, 
+            optimization_mode=self.optimization_mode)
+        pop.initialize(individuals)
+        
         
         
     

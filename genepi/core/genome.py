@@ -31,6 +31,15 @@ class Genome(object):
             h.update(gene.get_hash())
             
         return h.hexdigest()
+    
+    def copy(self):
+        genes_dict = OrderedDict()
+        for x in self.genes_dict:
+            genes_dict[x] = self.genes_dict[x].copy()
+        new_genome = Genome(genes_dict)
+        new_genome.score = self.score
+        new_genome.value = self.value
+        return new_genome
         
         
     def to_json(self):
