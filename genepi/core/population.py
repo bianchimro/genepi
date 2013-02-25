@@ -52,6 +52,12 @@ class Population(object):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
     
+    
+    def mutate(self):
+        """In place mutation for the population"""
+        for individual in self.individuals:
+            individual.mutate()
+            
             
     def select_individuals(self):
         return self.selection_method(self, self.num_parents)

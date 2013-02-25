@@ -33,6 +33,11 @@ class PopulationTest(unittest.TestCase):
         pop.initialize() 
         pop2 = pop.copy()   
     
+    def test_mutate(self):
+        pop = Population(self.protogenome)
+        pop.initialize() 
+        pop.mutate()
+    
         
     def test_sort(self):
         protogene_a = ProtoGene(IntGene, 'a')
