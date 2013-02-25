@@ -86,11 +86,12 @@ class GeneticAlgorithm(object):
         if self.storage:    
             self.storage.write_individual(hash, self.generation, individual )
     
-        self.population.sort(self.optimization_mode)
+        self.population.sort()
         self.stat_population()
         
     def stat_population(self):
-        """stats for current population: min max average"""
+        #TODO: implement
+        """stats for current population: min max average etc.."""
         stats = {}
         self.population_stats[self.generation] = stats
         if self.storage:
@@ -98,7 +99,7 @@ class GeneticAlgorithm(object):
         
 
     def best_individual(self):
-        return self.population[0]
+        return self.population.best_individual()
         
         
     def evolve_population(self):
