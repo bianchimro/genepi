@@ -16,4 +16,6 @@ class Population(object):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
             
-            
+    
+    def evolve(self):
+        pass
