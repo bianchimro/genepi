@@ -10,3 +10,7 @@
 
 # My virtual environment
 /env/
+
+#sqlite
+*.sqlite
+

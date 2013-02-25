@@ -22,13 +22,14 @@ class BaseGene(object):
     some methods that must be overridden.    
     """
      
-    def __init__(self, value=None):
+    def __init__(self, value=None, **options):
     
         # if value is not provided, it will be
         # randomly generated
         if value == None:
             value = self.random_value()   
         self.value = value    
+        self.options=options
     
     def copy(self):
         """
@@ -43,6 +44,9 @@ class BaseGene(object):
         Must be overridden
         """
         raise NotImplementedError("Method __add__ must be overridden")
+        
+    def __eq__(self, other):
+        return self.value == other.value
     
     def mutate(self):
         """
@@ -102,23 +106,36 @@ class FloatGene(BaseGene):
         meanValue = (self.value + other.value) / 2
         new_value = choice([meanValue, self.value, other.value])
         return FloatGene(value=new_value, min_value=self.min_value, max_value=self.max_value)     
-        
+    
+    
+    def set_value(self, value):
+        # if the gene has wandered outside the alphabet,
+        # bring it back in
+        if value <= self.min_value:
+            self.value = self.min_value
+        elif value >= self.max_value:
+            value = self.max_value
+        else:
+            self.value = value
+            
     
     def mutate(self):
         """
         Mutate this gene's value by a random amount
         within the range, which is determined by
-        multiplying self.mutAmt by the distance of the
+        multiplying self.mutation_speed by the distance of the
         gene's current value from either endpoint of legal values
         perform mutation IN-PLACE, ie don't return mutated copy
         """
         if random() < 0.5:
             # mutate downwards
-            max_abs_mut = (self.max_value - self.value) * self.mutation_speed
-            self.value -= uniform(0, max_abs_mut)
-        else:
             max_abs_mut = (self.value - self.min_value) * self.mutation_speed
-            self.value += uniform(0, max_abs_mut)
+            value = self.value - uniform(0, max_abs_mut)
+        else:
+            max_abs_mut =  (self.max_value - self.value) * self.mutation_speed
+            value = self.value + uniform(0, max_abs_mut)
+            
+        self.set_value(value)
     
     def random_value(self):
         """
@@ -136,32 +153,40 @@ class IntGene(BaseGene):
 
     def __init__(self, value=None,
                 min_value=-sys.maxint, max_value= sys.maxint + 1,
-                mutation_range = 100):
+                mutation_range = None):
         if min_value > max_value:
             raise ValueError("Max value should be greater than min value")
             
         self.min_value = min_value
         self.max_value = max_value
+        if not mutation_range:
+            mutation_range = (self.max_value-self.min_value) / 10
+            mutation_range=min(mutation_range,1)
         self.mutation_range = mutation_range
 
         super(IntGene, self).__init__(value=value) 
                             
 
+
+    def set_value(self, value):
+        # if the gene has wandered outside the alphabet,
+        # bring it back in
+        if value <= self.min_value:
+            self.value = self.min_value
+        elif value >= self.max_value:
+            value = self.max_value
+        else:
+            self.value = value
         
     def mutate(self):
         """
         perform mutation IN-PLACE, ie don't return mutated copy
         """
+        value = self.value + randrange(-self.mutation_range, self.mutation_range)
+        self.set_value(value)
         
-        self.value += randrange(-self.mutation_range, self.mutation_range + 1)
         
-        # if the gene has wandered outside the alphabet,
-        # bring it back in
-        if self.value < self.min_value:
-            self.value = self.min_value
-        elif self.value > self.max_value:
-            self.value = self.max_value
-    
+        
     def random_value(self):
         """
         return a legal random value for this gene
@@ -176,8 +201,9 @@ class IntGene(BaseGene):
         this gene with another gene in the pair
         returns a new IntGene, based on a random choice between the two and their mean
         """
+        seed()
         mean_value = int((self.value + other.value) / 2)
-        new_value = choice([mean_value, self.value, other.value])
+        new_value = choice([self.value, mean_value, other.value])
         return IntGene(value=new_value, min_value=self.min_value, max_value=self.max_value,
                     mutation_range = self.mutation_range)
 

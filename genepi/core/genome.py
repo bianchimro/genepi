@@ -28,7 +28,9 @@ class Genome(object):
 
     def get_value(self, key):
         return self.genes_dict[key].value
-        
+    
+    def set_value(self, key, value):
+        self.genes_dict[key].value = value
         
     def get_hash(self):
         h = hashlib.md5()
@@ -51,10 +53,11 @@ class Genome(object):
         
     def to_json(self):
         dict_value = self.dict_value()
-        json.dumps(dict_value)
+        return json.dumps(dict_value)
         
     
     def should_mutate_uniform_probability(self):
+        random.seed()
         coin = random.random()
         if coin <= self.mutation_probability:
             return True
@@ -74,7 +77,15 @@ class Genome(object):
         new_genome = self.copy(genes_dict=genes_dict)
         new_genome.score = None
         return new_genome
-            
+    
+    def __eq__(self, other):
+        out = True
+        for name in self.genes_dict:
+            gene = self.genes_dict[name]
+            other_gene = other.genes_dict[name]
+            out = out and (gene==other_gene)
+        return out
+
         
         
     def mutate(self):

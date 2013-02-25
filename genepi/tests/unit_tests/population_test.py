@@ -24,7 +24,6 @@ class PopulationTest(unittest.TestCase):
     def test_initialize(self):
         pop = Population(self.protogenome)
         pop.initialize()    
-        print len(pop.individuals), pop.size
         assert len(pop.individuals) == pop.size
     
     

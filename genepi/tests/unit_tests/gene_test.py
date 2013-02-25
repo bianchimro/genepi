@@ -37,6 +37,11 @@ class BaseGeneTest(unittest.TestCase):
         gene_a = BaseGene(value=1)
         gene_b = BaseGene(value=10)
         gene_c = gene_a + gene_b
+        
+    def test_eq(self):
+        gene_a = BaseGene(value=1)
+        gene_b = BaseGene(value=1)
+        assert gene_a == gene_b
                 
     def test_get_hash(self):
         gene_a =BaseGene(value=1)

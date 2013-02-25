@@ -1,7 +1,8 @@
 """Contains genetic algorithm glasses"""
 
-from genepi.core.population import Population
+from genepi.core.population import Population, POPULATION_DEFAULT_SIZE
 from genepi.cache.base import BaseCache, DictCache
+from genepi.core import stopcriteria
 
 class GeneticAlgorithm(object):
     """Genetic algorithm class"""
@@ -20,40 +21,51 @@ class GeneticAlgorithm(object):
     def __init__(self, 
                     protogenome,
                     fitness_evaluator,
-                    population_size=population_size,
-                    optimization_mode='min',
-                    termination_criteria=None,
-                    selection_method=None,
-                    step_callback=None,
-                    mutation_probability=0,
-                    crossover_probability=0,
-                    crossover_method=None,
-                    cache_instance=None):
-
+                    **options):
+                 
         self.protogenome = protogenome
         self.fitness_evaluator = fitness_evaluator
-        self.population_size = population_size
-        self.optimization_mode = optimization_mode
-        self.termination_criteria = termination_criteria
-        self.step_callback = step_callback
-        self.mutation_probability = mutation_probability
-        self.crossover_probability = crossover_probability
-        self.crossover_method = crossover_method
-        
-        self.population = Population(self.protogenome,
-            size=self.population_size, 
-            selection_method=self.selection_method,
-            crossover_probability=self.crossover_probability, 
-            crossover_method=self.crossover_method, 
-            mutation_probability=self.mutation_probability)
 
-        self.generation = 0
+        self.options = options
+        self.population_size = options.get('population_size', POPULATION_DEFAULT_SIZE)
         
+        self.optimization_mode = options.get('optimization_mode', 'min')
+        self.termination_criteria = options.get('termination_criteria', None)
+        if self.termination_criteria is None:
+            self.termination_criteria = stopcriteria.convergence_stop
+        
+        self.step_callback = options.get('step_callback', None)
+        
+        #default crossover and selections are handled by population
+        self.crossover_method = options.get('crossover_method', None)
+        self.selection_method = options.get('selection_method', None)
+
+        self.elitism = options.get('elitism', True)
+        self.num_parents = options.get('num_parents', 2)
+        
+        cache_instance = options.get('cache_instance', None)
         if cache_instance is None:
             self.cache = DictCache()
         else:
             self.cache = cache_instance
         
+        storage_instance = options.get('storage_instance', None)            
+        if storage_instance:
+            self.storage = storage_instance
+        else:
+            self.storage = None
+
+        self.population = Population(self.protogenome,
+                size=self.population_size, 
+                optimization_mode=self.optimization_mode,
+                selection_method=self.selection_method,
+                crossover_method=self.crossover_method,
+                elitism=self.elitism,
+                num_parents=self.num_parents)
+
+        self.generation = 0
+        self.population_stats = {}
+
     
     def initialize(self):
         self.population.initialize()
@@ -65,10 +77,10 @@ class GeneticAlgorithm(object):
     def should_terminate(self):
         if type(self.termination_criteria) == type(list()):
             for criterium in self.termination_criteria:
-                if criterium(self):
+                if criterium(self, **self.options):
                     return True
         else:
-            if self.termination_criteria(self):
+            if self.termination_criteria(self, **self.options):
                 return True
                 
         return False
@@ -113,9 +125,8 @@ class GeneticAlgorithm(object):
             if self.should_terminate():
                 break
             self.evolve_population()
-            self.evaluate_population()
-                      
-        
+            self.evaluate_population()            
+                     
         return self.best_individual()
             
     

@@ -9,6 +9,7 @@ def select_from_top(population, num_individuals):
 def genome_add(genome_a, genome_b):
     return genome_a + genome_b
     
+POPULATION_DEFAULT_SIZE = 100
 
 class Population(object):
     """A population is a collection of individuals"""
@@ -16,7 +17,7 @@ class Population(object):
     individuals = []
     size = 100
 
-    def __init__(self, protogenome, size=100, **options):
+    def __init__(self, protogenome, size=POPULATION_DEFAULT_SIZE, **options):
         
         self.protogenome = protogenome
         self.size = size
@@ -30,10 +31,14 @@ class Population(object):
         self.elitism = options.get('elitism', True)
         
         #selection method
-        self.selection_method = options.get('selection_method', select_from_top)
+        self.selection_method = options.get('selection_method', None)
+        if self.selection_method is None:
+            self.selection_method = select_from_top
         
         #crossover method
-        self.crossover_method = options.get('crossover_method', genome_add)
+        self.crossover_method = options.get('crossover_method', None)
+        if self.crossover_method is None:
+            self.crossover_method = genome_add
         
         self.generation_number = 0
         self.sorted = False
@@ -88,7 +93,8 @@ class Population(object):
         parents_candidates = self.select_individuals()
         if self.elitism:
             for individual in parents_candidates:
-                new_individuals.append(individual.copy())
+                new_individual = individual.copy()
+                new_individuals.append(new_individual)
             
         while num_individuals < self.size:
             #breeding and crossover
@@ -96,7 +102,7 @@ class Population(object):
             new_individual = self.crossover_method(parents[0], parents[1])
             #mutation
             new_individual.mutate()
-            new_individuals.append(individual)
+            new_individuals.append(new_individual)
             num_individuals += 1
     
         new_population = self.copy(individuals=new_individuals)
@@ -128,7 +134,8 @@ class Population(object):
                 new_individual = individual.copy()
                 individuals.append(new_individual)
         
-        pop = Population(self.protogenome, self.size, **self.options) 
+        pop = Population(self.protogenome, self.size, **self.options)
+        pop.initialize(individuals=individuals) 
         return pop
         
         
