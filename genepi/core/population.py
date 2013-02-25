@@ -16,31 +16,24 @@ class Population(object):
     individuals = []
     size = 100
 
-    def __init__(self, protogenome, size=100, 
-        optimization_mode='min', 
-        crossover_method=None,
-        selection_method=None, 
-        **kwargs):
+    def __init__(self, protogenome, size=100, **options):
         
         self.protogenome = protogenome
         self.size = size
-        self.optimization_mode=optimization_mode
         
-        #TODO: parametrize
+        self.options = options
+        self.optimization_mode=options.get('optimization_mode', 'min')
+        
         #number of selected parents
-        self.num_parents = 2
+        self.num_parents = options.get('num_parents', 2)
         #elitism
-        self.elitism = True
+        self.elitism = options.get('elitism', True)
         
         #selection method
-        if not selection_method:
-            selection_method = select_from_top
-        self.selection_method=selection_method    
+        self.selection_method = options.get('selection_method', select_from_top)
         
         #crossover method
-        if not crossover_method:
-            crossover_method = genome_add
-        self.crossover_method=crossover_method
+        self.crossover_method = options.get('crossover_method', genome_add)
         
         self.generation_number = 0
         self.sorted = False
@@ -134,9 +127,7 @@ class Population(object):
                 new_individual = individual.copy()
                 individuals.append(new_individual)
         
-        pop = Population(self.protogenome, self.size, 
-            optimization_mode=self.optimization_mode)
-        pop.initialize(individuals)
+        pop = Population(self.protogenome, self.size, **self.options) 
         return pop
         
         
