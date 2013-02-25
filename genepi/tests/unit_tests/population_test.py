@@ -33,6 +33,7 @@ class PopulationTest(unittest.TestCase):
         pop.initialize() 
         pop2 = pop.copy()   
     
+    
     def test_mutate(self):
         pop = Population(self.protogenome)
         pop.initialize() 
