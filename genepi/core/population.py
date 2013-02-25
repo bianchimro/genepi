@@ -2,8 +2,8 @@ from copy import copy, deepcopy
 import random
 
 #TODO: move to SELECTORS module
-def select_from_top(sorted_individuals, num_individuals):
-    return sorted_individuals[:num_individuals]
+def select_from_top(population, num_individuals):
+    return population.individuals[:num_individuals]
 
 #TODO: move to CROSSOVER module    
 def genome_add(genome_a, genome_b):
@@ -52,14 +52,9 @@ class Population(object):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
     
-    
-    def mutate(self):
-        """In place mutation for the population"""
-        for individual in self.individuals:
-            individual.mutate()
             
     def select_individuals(self):
-        return self.selection_method(self.individuals, self.num_parents)
+        return self.selection_method(self, self.num_parents)
     
     
     def fit_individuals(self, fitness_evaluator, cache=None, eval_callback= None):
