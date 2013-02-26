@@ -35,7 +35,7 @@ class BaseGene(object):
         """
         returns clone of this gene
         """
-        return deepcopy(self)
+        return self.__class__(self.value, **self.options)
     
     def __add__(self, other):
         """
@@ -84,7 +84,12 @@ class FloatGene(BaseGene):
           value to be greater than this
     """
     
-    def __init__(self, value=None, min_value=-1.0, max_value = 1.0, mutation_speed=1.0):
+    def __init__(self, value=None, **options):
+        
+        
+        max_value = options.get('max_value', 1.0)
+        min_value = options.get('min_value', -1.0)
+        mutation_speed = options.get('mutation_speed', 1.0)
         
         if min_value > max_value:
             raise ValueError("Max value should be greater than min value")
@@ -96,7 +101,7 @@ class FloatGene(BaseGene):
             raise ValueError("Mutation speed should be between 0 and 1")
         if value:
             value = float(value)
-        super(FloatGene, self).__init__(value=value)
+        super(FloatGene, self).__init__(value=value, **options)
     
     def __add__(self, other):
         """
@@ -151,20 +156,24 @@ class IntGene(BaseGene):
     constrained within the min_value,max_value range
     """
 
-    def __init__(self, value=None,
-                min_value=-sys.maxint, max_value= sys.maxint + 1,
-                mutation_range = None):
+    def __init__(self, value=None, **options):
+        
+        min_value = options.get('min_value', -sys.maxint)
+        max_value = options.get('max_value', sys.maxint)
+        mutation_range = options.get('mutation_range', None)
+        
+        
         if min_value > max_value:
             raise ValueError("Max value should be greater than min value")
             
         self.min_value = min_value
         self.max_value = max_value
         if not mutation_range:
-            mutation_range = (self.max_value-self.min_value) / 10
+            mutation_range = (self.max_value-self.min_value) / 2
             mutation_range=min(mutation_range,1)
         self.mutation_range = mutation_range
 
-        super(IntGene, self).__init__(value=value) 
+        super(IntGene, self).__init__(value=value, **options) 
                             
 
 
@@ -172,9 +181,10 @@ class IntGene(BaseGene):
         # if the gene has wandered outside the alphabet,
         # bring it back in
         if value <= self.min_value:
+            value = value + self.min_value
             self.value = self.min_value
         elif value >= self.max_value:
-            value = self.max_value
+            self.value = self.max_value
         else:
             self.value = value
         
@@ -182,7 +192,11 @@ class IntGene(BaseGene):
         """
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        value = self.value + randrange(-self.mutation_range, self.mutation_range)
+        
+        mut_amt = randrange(1, self.mutation_range+1)
+        if random() < 0.5:
+            mut_amt = -mut_amt
+        value = self.value + mut_amt    
         self.set_value(value)
         
         
@@ -217,12 +231,14 @@ class DiscreteGene(BaseGene):
     spontaneously change into one of its alleles
     """
     
-    def __init__(self, value=None, alleles=[]):
+    def __init__(self, value=None, **options):
+    
+        alleles=options.get('alleles', [])
         
         self.alleles = alleles
         if value is not None and value not in alleles:
             raise ValueError("Provided value must be in alleles")
-        super(DiscreteGene, self).__init__(value=value)
+        super(DiscreteGene, self).__init__(value=value, **options)
     
     def mutate(self):
         """

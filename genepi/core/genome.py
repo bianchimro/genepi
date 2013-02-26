@@ -60,7 +60,6 @@ class Genome(object):
         
     
     def should_mutate_uniform_probability(self):
-        random.seed()
         coin = random.random()
         if coin <= self.mutation_probability:
             return True
@@ -76,6 +75,22 @@ class Genome(object):
             gene = self.genes_dict[name]
             other_gene = other.genes_dict[name]
             genes_dict[name] = gene + other_gene
+
+        new_genome = self.copy(genes_dict=genes_dict)
+        new_genome.score = None
+        return new_genome
+        
+    def crossover(self, other):
+        actual_genes = self.genes_dict.keys()
+        num_genes = len(actual_genes)
+        point = random.randrange(0, num_genes)
+        
+        genes_dict = OrderedDict()
+        for x, name in enumerate(actual_genes):
+            if x < point:
+                genes_dict[name] = self.genes_dict[name]
+            else:
+                genes_dict[name] = other.genes_dict[name]
 
         new_genome = self.copy(genes_dict=genes_dict)
         new_genome.score = None

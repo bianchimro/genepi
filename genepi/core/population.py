@@ -9,6 +9,14 @@ def select_from_top(population, num_individuals):
 def genome_add(genome_a, genome_b):
     return genome_a + genome_b
     
+def genome_choose(genome_a, genome_b):
+    return random.choice([genome_a, genome_b])
+    
+def single_point_crossover(genome_a, genome_b):
+    return genome_a.crossover(genome_b)
+    
+    
+    
 POPULATION_DEFAULT_SIZE = 100
 
 class Population(object):
@@ -100,6 +108,7 @@ class Population(object):
             #breeding and crossover
             parents = random.sample(parents_candidates, 2)
             new_individual = self.crossover_method(parents[0], parents[1])
+            #new_individual = new_individual.copy()
             #mutation
             new_individual.mutate()
             new_individuals.append(new_individual)
