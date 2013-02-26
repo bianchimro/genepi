@@ -64,7 +64,7 @@ class GeneticAlgorithm(object):
                 num_parents=self.num_parents)
 
         self.generation = 0
-        self.population_stats = {}
+        self.population_stats = []
 
     
     def initialize(self):
@@ -98,8 +98,15 @@ class GeneticAlgorithm(object):
     def stat_population(self):
         #TODO: implement
         """stats for current population: min max average etc.."""
-        stats = {}
-        self.population_stats[self.generation] = stats
+        scores = [individual.score for individual in self.population.individuals]
+        avg_score = sum(scores) / len(scores)
+        min_score = min(scores)
+        max_score = max(scores)
+        stats = { 'avg_score' : avg_score, 'min_score' : min_score, 'max_score' : max_score}
+
+        self.population_stats.append(stats)
+        print stats
+        
         if self.storage:
             self.storage.write_population_stats(self.generation, stats)
         

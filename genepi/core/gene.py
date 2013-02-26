@@ -11,7 +11,6 @@ These genes work via classical Mendelian genetics
 import sys
 from random import randrange, random, uniform, choice,seed
 from math import sqrt
-from copy import copy, deepcopy
 
 
 class BaseGene(object):
@@ -180,10 +179,10 @@ class IntGene(BaseGene):
     def set_value(self, value):
         # if the gene has wandered outside the alphabet,
         # bring it back in
-        if value <= self.min_value:
+        if value < self.min_value:
             value = value + self.min_value
             self.value = self.min_value
-        elif value >= self.max_value:
+        elif value > self.max_value:
             self.value = self.max_value
         else:
             self.value = value
@@ -215,7 +214,6 @@ class IntGene(BaseGene):
         this gene with another gene in the pair
         returns a new IntGene, based on a random choice between the two and their mean
         """
-        seed()
         mean_value = int((self.value + other.value) / 2)
         new_value = choice([self.value, mean_value, other.value])
         return IntGene(value=new_value, min_value=self.min_value, max_value=self.max_value,

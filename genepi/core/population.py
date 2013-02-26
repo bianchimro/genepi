@@ -5,16 +5,6 @@ from genepi.core.crossover import single_point_crossover
 #TODO: move to SELECTORS module
 def select_from_top(population, num_individuals):
     return population.individuals[:num_individuals]
-
-#TODO: move to CROSSOVER module    
-def genome_add(genome_a, genome_b):
-    return genome_a + genome_b
-    
-def genome_choose(genome_a, genome_b):
-    return random.choice([genome_a, genome_b])
-    
-def single_point_crossover(genome_a, genome_b):
-    return genome_a.crossover(genome_b)
     
     
     

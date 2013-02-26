@@ -40,19 +40,21 @@ class GeneticAlgorithmTest(unittest.TestCase):
         
         for individual in algo.population.individuals:
             individual.score = 1
+        
+        for x in range(11):
+            stats = {'min_score' : 0}
+            algo.population_stats.append(stats)
+        algo.generation = 10
         st = algo.should_terminate()
         assert st == True
         
-        for i, individual in enumerate(algo.population.individuals):
-            individual.set_value('a', i)
-            individual.score = i
-            
+        algo.generation = 1
         st = algo.should_terminate()
         assert st == False
         
         
     def test_evaluate_population(self):
-        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100, value=1)
+        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
         protogenome = ProtoGenome([protogene])
         algo = GeneticAlgorithm(protogenome, fitness_evaluator, termination_criteria=convergence_stop)
         algo.initialize()
@@ -74,7 +76,7 @@ class GeneticAlgorithmTest(unittest.TestCase):
         
     
     def test_evolve_population(self):
-        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
+        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=10)
         protogenome = ProtoGenome([protogene])
         algo = GeneticAlgorithm(protogenome, fitness_evaluator, termination_criteria=convergence_stop)
         algo.initialize()
@@ -93,7 +95,7 @@ class GeneticAlgorithmTest(unittest.TestCase):
         
     def test_evolve_storage(self):
         storage_instance = SqliteStorage("test.sqlite")
-        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
+        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=10)
         protogenome = ProtoGenome([protogene], mutation_probability=0.1)
         algo = GeneticAlgorithm(protogenome, fitness_evaluator, 
             termination_criteria=convergence_stop, storage_instance=storage_instance)
@@ -102,7 +104,7 @@ class GeneticAlgorithmTest(unittest.TestCase):
    
         
     def test_evolve_2(self):
-        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=1000)
+        protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
         protogenome = ProtoGenome([protogene], mutation_probability=0.1)
         algo = GeneticAlgorithm(protogenome, fitness_evaluator, termination_criteria=[raw_score_stop,convergence_stop], stop_score=0)
         algo.evolve()

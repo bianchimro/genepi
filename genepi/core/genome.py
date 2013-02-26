@@ -69,6 +69,7 @@ class Genome(object):
     def should_mutate(self, gene):
         return self.should_mutate_uniform_probability()
     
+    
     def __add__(self, other):
         genes_dict = OrderedDict()
         for name in self.genes_dict:
@@ -80,17 +81,25 @@ class Genome(object):
         new_genome.score = None
         return new_genome
         
+    
     def crossover(self, other):
+        """Single point crossover"""
         actual_genes = self.genes_dict.keys()
         num_genes = len(actual_genes)
         point = random.randrange(0, num_genes)
         
         genes_dict = OrderedDict()
         for x, name in enumerate(actual_genes):
-            if x < point:
-                genes_dict[name] = self.genes_dict[name]
+            if random.random() < 0.5:
+                a = self
+                b = other
             else:
-                genes_dict[name] = other.genes_dict[name]
+                a = other
+                b = self
+            if x < point:
+                genes_dict[name] = a.genes_dict[name].copy()
+            else:
+                genes_dict[name] = b.genes_dict[name].copy()
 
         new_genome = self.copy(genes_dict=genes_dict)
         new_genome.score = None
