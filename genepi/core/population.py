@@ -1,5 +1,6 @@
 from copy import copy, deepcopy
 import random
+from genepi.core.crossover import single_point_crossover
 
 #TODO: move to SELECTORS module
 def select_from_top(population, num_individuals):
@@ -46,7 +47,7 @@ class Population(object):
         #crossover method
         self.crossover_method = options.get('crossover_method', None)
         if self.crossover_method is None:
-            self.crossover_method = genome_add
+            self.crossover_method = single_point_crossover
         
         self.generation_number = 0
         self.sorted = False
