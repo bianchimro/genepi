@@ -92,7 +92,8 @@ class GeneticAlgorithm(object):
         
     def evaluate_population(self):
         self.population.fit_individuals(self.fitness_evaluator, self.cache, eval_callback=self.store_individual)
-        self.stat_population()
+        stats = self.stat_population()
+        self.population.scale_individuals(stats)
         
         
     def stat_population(self):
@@ -102,13 +103,15 @@ class GeneticAlgorithm(object):
         avg_score = sum(scores) / len(scores)
         min_score = min(scores)
         max_score = max(scores)
-        stats = { 'avg_score' : avg_score, 'min_score' : min_score, 'max_score' : max_score}
 
+        stats = { 'avg_score' : avg_score, 'min_score' : min_score, 'max_score' : max_score}
         self.population_stats.append(stats)
         print stats
         
         if self.storage:
             self.storage.write_population_stats(self.generation, stats)
+            
+        return stats
         
 
     def best_individual(self):

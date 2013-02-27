@@ -11,6 +11,7 @@ class Genome(object):
     
     genes_dict = OrderedDict()
     score = None
+    scaled_score = None
     
     def __init__(self, genes_dict, mutation_probability=0.1):
         self.genes_dict = genes_dict
@@ -79,6 +80,7 @@ class Genome(object):
 
         new_genome = self.copy(genes_dict=genes_dict)
         new_genome.score = None
+        new_genome.scaled_score = None
         return new_genome
         
     
@@ -103,6 +105,7 @@ class Genome(object):
 
         new_genome = self.copy(genes_dict=genes_dict)
         new_genome.score = None
+        new_genome.scaled_score = None
         return new_genome
     
     def __eq__(self, other):

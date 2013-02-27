@@ -6,7 +6,27 @@ from genepi.core.crossover import single_point_crossover
 def select_from_top(population, num_individuals):
     return population.individuals[:num_individuals]
     
+def roulette_select(population, num_individuals):
+    """ Roulette selection, implemented according to:
+        <http://stackoverflow.com/questions/177271/roulette
+        -selection-in-genetic-algorithms/177278#177278>
+    """
     
+    current_scaled_scores = population.current_scaled_scores
+    
+    # Generate probability intervals for each individual
+    probs = [sum(current_scaled_scores[:i+1]) for i in range(len(current_scaled_scores))]
+    # Draw new population
+    new_population = []
+    for n in xrange(num_individuals):
+        r = random.random()
+        for (i, individual) in enumerate(population.individuals):
+            if r <= probs[i]:
+                new_population.append(individual)
+                break
+    return new_population
+
+
     
 POPULATION_DEFAULT_SIZE = 100
 
@@ -84,23 +104,31 @@ class Population(object):
     
         self.sort()
         
+    def scale_individuals(self, stats):
+        range = stats['max_score'] - stats['min_score']
+        for individual in self.individuals:
+            score = individual.score - stats['min_score']
+            individual.scaled_score = score/range
+        #todo: kinda cache ...
+        self.current_scaled_scores = [x.score for x in self.individuals]
+        
             
     def evolve(self):
         new_individuals = []
         num_individuals = 0
         
-        parents_candidates = self.select_individuals()
         if self.elitism:
+            parents_candidates = select_from_top(self, self.num_parents)
             for individual in parents_candidates:
                 new_individual = individual.copy()
                 new_individuals.append(new_individual)
             
         while num_individuals < self.size:
             #breeding and crossover
+            parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
             new_individual = self.crossover_method(parents[0], parents[1])
-            #new_individual = new_individual.copy()
-            #mutation
+            #mutate
             new_individual.mutate()
             new_individuals.append(new_individual)
             num_individuals += 1
@@ -110,12 +138,14 @@ class Population(object):
         new_population.generation_number = self.generation_number + 1
         return new_population
         
+        
     def cmp_individual(self, a, b):
         #TODO: document, this is a bit tricky
         if self.optimization_mode == 'min':
             return cmp(a.score, b.score)
         else:
             return cmp(b.score, a.score)
+        
         
     def sort(self):
         self.individuals.sort(self.cmp_individual)
