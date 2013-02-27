@@ -4,7 +4,7 @@ from genepi.core.protogenome import ProtoGenome
 from genepi.core.gene import IntGene
 from genepi.core.stopcriteria import raw_score_stop, convergence_stop
 from genepi.core.crossover import single_point_crossover
-from genepi.core.population import roulette_select
+from genepi.core.selectors import roulette_select
 
 # This function is the evaluation function, we want
 # to give high score to more zero'ed chromosomes

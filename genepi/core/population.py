@@ -84,10 +84,16 @@ class Population(object):
         self.sort()
         
     def scale_individuals(self, stats):
-        range = stats['max_score'] - stats['min_score']
+        
+        ref = (stats['max_score'] - stats['min_score']) + 1
+            
         for individual in self.individuals:
-            score = individual.score - stats['min_score']
-            individual.scaled_score = score/range
+            if self.optimization_mode == 'max':
+                score = (individual.score -stats['min_score'])
+            else:
+                score = (stats['max_score'] - individual.score - stats['min_score'])
+           
+            individual.scaled_score = score / ref
         #todo: kinda cache ...
         self.current_scaled_scores = [x.score for x in self.individuals]
         
