@@ -37,6 +37,8 @@ class Population(object):
         self.crossover_method = options.get('crossover_method', None)
         if self.crossover_method is None:
             self.crossover_method = single_point_crossover
+            
+        self.crossover_probability = options.get('crossover_probability', 0.5)
         
         self.generation_number = 0
         self.sorted = False
@@ -96,6 +98,13 @@ class Population(object):
             individual.scaled_score = score / ref
         #todo: kinda cache ...
         self.current_scaled_scores = [x.score for x in self.individuals]
+    
+    
+    def should_crossover(self):
+        coin = random.random()
+        if coin <= self.crossover_probability:
+            return True
+        return False
         
             
     def evolve(self):
@@ -112,7 +121,8 @@ class Population(object):
             #breeding and crossover
             parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
-            new_individual = self.crossover_method(parents[0], parents[1])
+            if self.should_crossover():
+                new_individual = self.crossover_method(parents[0], parents[1])
             #mutate
             new_individual.mutate()
             new_individuals.append(new_individual)
