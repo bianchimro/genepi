@@ -92,13 +92,13 @@ class GeneticAlgorithm(object):
             self.storage.write_individual(hash, self.generation, individual )
 
         
-    def evaluate_population(self):
+    def evaluate_population(self, **options):
         self.population.fit_individuals(self.fitness_evaluator, self.cache, eval_callback=self.store_individual)
-        stats = self.stat_population()
+        stats = self.stat_population(**options)
         self.population.scale_individuals(stats)
         
         
-    def stat_population(self):
+    def stat_population(self, **options):
         #TODO: implement
         """stats for current population: min max average etc.."""
         scores = [individual.score for individual in self.population.individuals]
@@ -126,7 +126,9 @@ class GeneticAlgorithm(object):
             else:
                 stats['idle_cycles'] = 0
 
-        print stats
+        if options.get('debug', None):
+            print stats
+
         if self.storage:
             self.storage.write_population_stats(self.generation, stats)
             
@@ -137,24 +139,24 @@ class GeneticAlgorithm(object):
         return self.population.best_individual()
         
         
-    def evolve_population(self):
+    def evolve_population(self, **options):
         new_population = self.population.evolve()
         self.population = new_population
         self.generation = new_population.generation_number
          
     
-    def evolve(self):
+    def evolve(self, **options):
         if not self.termination_criteria:
             raise TypeError("You Must set one or more termination criteria")
         
         self.initialize()
-        self.evaluate_population()
+        self.evaluate_population(**options)
         
         while 1:
             if self.should_terminate():
                 break
-            self.evolve_population()
-            self.evaluate_population()            
+            self.evolve_population(**options)
+            self.evaluate_population(**options)            
                      
         return self.best_individual()
             

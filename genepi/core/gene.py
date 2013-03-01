@@ -89,6 +89,7 @@ class FloatGene(BaseGene):
         max_value = options.get('max_value', 1.0)
         min_value = options.get('min_value', -1.0)
         mutation_speed = options.get('mutation_speed', 1.0)
+        mutation_max_step = options.get('mutation_max_step', 1.0)
         
         if min_value > max_value:
             raise ValueError("Max value should be greater than min value")
@@ -96,6 +97,7 @@ class FloatGene(BaseGene):
         self.min_value = float(min_value)
         self.max_value = float(max_value)
         self.mutation_speed = float(mutation_speed)
+        self.mutation_max_step = float(mutation_max_step)
         if mutation_speed < 0 or mutation_speed > 1:
             raise ValueError("Mutation speed should be between 0 and 1")
         if value:
@@ -134,13 +136,14 @@ class FloatGene(BaseGene):
         
         #self.value = self.random_value()
         #return
-        
+
+        max_abs_mut = self.mutation_max_step        
         if random() < 0.5:
             # mutate downwards
-            max_abs_mut = (self.value - self.min_value) * self.mutation_speed
+            #max_abs_mut = (self.value - self.min_value) * self.mutation_speed
             value = self.value - uniform(0, max_abs_mut)
         else:
-            max_abs_mut =  (self.max_value - self.value) * self.mutation_speed
+            #max_abs_mut =  (self.max_value - self.value) * self.mutation_speed
             value = self.value + uniform(0, max_abs_mut)
             
         self.set_value(value)

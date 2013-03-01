@@ -106,6 +106,13 @@ class Population(object):
             return True
         return False
         
+    def crossover(self, genome_a, genome_b):
+        if type(self.crossover_method) == type(list()):
+            meth = random.choice(self.crossover_method)
+        else:
+            meth = self.crossover_method
+        return meth(genome_a, genome_b)
+        
             
     def evolve(self):
         new_individuals = []
@@ -122,7 +129,7 @@ class Population(object):
             parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
             if self.should_crossover():
-                new_individual = self.crossover_method(parents[0], parents[1])
+                new_individual = self.crossover(parents[0], parents[1])
             else:
                 new_individual = random.choice(parents).copy()
             #mutate

@@ -1,3 +1,5 @@
+import random
+
 def genome_add(genome_a, genome_b):
     return genome_a + genome_b
     
