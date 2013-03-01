@@ -21,11 +21,10 @@ def test_1():
     pg_1 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=10)
     pg_2 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=10)
     protogenes = [pg_1, pg_2]
-    protogenome = ProtoGenome(protogenes) 
+    protogenome = ProtoGenome(protogenes, mutation_probability = 0.15) 
     algo = GeneticAlgorithm(protogenome, schafferF6, 
         population_size = 200,
         optimization_mode = 'min',
-        mutation_probability = 0.15,
         num_parents = 8,
         #elitism = False,
         crossover_method = single_point_crossover,

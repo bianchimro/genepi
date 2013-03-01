@@ -23,11 +23,10 @@ def genetic_fitness(genome):
     pg_1 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=5)
     pg_2 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=5)
     protogenes = [pg_1, pg_2]
-    protogenome = ProtoGenome(protogenes) 
+    protogenome = ProtoGenome(protogenes, mutation_probability = values['mutation_probability'],) 
     algo = GeneticAlgorithm(protogenome, schafferF6, 
         population_size = values['pop_size'],
         optimization_mode = 'min',
-        mutation_probability = values['mutation_probability'],
         num_parents = values['num_parents'],
         #elitism = False,
         crossover_method = values['crossover_method'],

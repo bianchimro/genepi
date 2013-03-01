@@ -60,15 +60,16 @@ class Genome(object):
         return json.dumps(dict_value)
         
     
-    def should_mutate_uniform_probability(self):
+    def should_mutate_uniform_probability(self, probability=None):
+        probability = probability or self.mutation_probability
         coin = random.random()
-        if coin <= self.mutation_probability:
+        if coin <= probability:
             return True
         return False
     
     
-    def should_mutate(self, gene):
-        return self.should_mutate_uniform_probability()
+    def should_mutate(self, gene, probability=None):
+        return self.should_mutate_uniform_probability(probability)
     
     
     def __add__(self, other):
@@ -118,7 +119,7 @@ class Genome(object):
 
         
         
-    def mutate(self):
+    def mutate(self, probability=None):
         """In place mutation"""
         has_mutated = False
         for name in self.genes_dict:

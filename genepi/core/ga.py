@@ -15,7 +15,6 @@ class GeneticAlgorithm(object):
     fitness_evaluator = None
     optimization_mode = 'min'
     
-    mutation_probability = 0
     crossover_probability = 0
     
     def __init__(self, 

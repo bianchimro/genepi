@@ -21,6 +21,8 @@ class Population(object):
         self.size = size
         
         self.options = options
+        
+        #optimization mode - 'min' or 'max'
         self.optimization_mode=options.get('optimization_mode', 'min')
         
         #number of selected parents
@@ -37,9 +39,15 @@ class Population(object):
         self.crossover_method = options.get('crossover_method', None)
         if self.crossover_method is None:
             self.crossover_method = single_point_crossover
-            
         self.crossover_probability = options.get('crossover_probability', 0.5)
+
+        #crossover wrapper
+        self.crossover_wrapper_method = options.get('crossover_wrapper_method', None)
         
+        #mutation wrapper
+        self.mutation_wrapper_method = options.get('mutation_wrapper_method', None)
+        
+        #internal state
         self.generation_number = 0
         self.sorted = False
         
@@ -106,12 +114,24 @@ class Population(object):
             return True
         return False
         
+        
+    def crossover_wrapper(self, parents):
+        if self.crossover_wrapper_method:
+            return self.crossover_wrapper_method(self, parents)
+        return self.crossover(parents[0], parents[1])
+        
     def crossover(self, genome_a, genome_b):
         if type(self.crossover_method) == type(list()):
             meth = random.choice(self.crossover_method)
         else:
             meth = self.crossover_method
         return meth(genome_a, genome_b)
+    
+    
+    def mutation_wrapper(self, genome):
+        if self.mutation_wrapper_method:
+            return self.mutation_wrapper_method(self, genome)
+        return genome.mutate()
         
             
     def evolve(self):
@@ -129,11 +149,11 @@ class Population(object):
             parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
             if self.should_crossover():
-                new_individual = self.crossover(parents[0], parents[1])
+                new_individual = self.crossover_wrapper(parents)
             else:
                 new_individual = random.choice(parents).copy()
             #mutate
-            new_individual.mutate()
+            self.mutation_wrapper(new_individual)
             new_individuals.append(new_individual)
             num_individuals += 1
     
