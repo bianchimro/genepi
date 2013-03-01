@@ -9,7 +9,7 @@ These genes work via classical Mendelian genetics
 """
 
 import sys
-from random import randrange, random, uniform, choice,seed
+import random
 from math import sqrt
 
 
@@ -107,10 +107,10 @@ class FloatGene(BaseGene):
     def __add__(self, other):
         """
         Combines two genes in a gene pair, to produce an effect
-        returns a new FloatGene, based on a random choice between the two and their mean
+        returns a new FloatGene, based on a random random.choice between the two and their mean
     """
         meanValue = (self.value + other.value) / 2
-        new_value = choice([meanValue, self.value, other.value])
+        new_value = random.choice([meanValue, self.value, other.value])
         return FloatGene(value=new_value, min_value=self.min_value, max_value=self.max_value)     
     
     
@@ -123,7 +123,21 @@ class FloatGene(BaseGene):
             value = self.max_value
         else:
             self.value = value
-            
+    
+    
+    def mutate_triangular(self):
+        try:
+            mode = ((self.max_value -self.value) / (self.max_value - self.min_value)/2)
+        except:
+            mode = None
+        self.value = random.triangular(self.min_value, self.max_value, mode)
+        return 
+    
+    def mutate_gauss(self):
+        sigma = float(abs(self.max_value - self.min_value)) / 100
+        value = random.gauss(self.value, sigma)
+        self.set_value(value)
+              
     
     def mutate(self):
         """
@@ -133,18 +147,14 @@ class FloatGene(BaseGene):
         gene's current value from either endpoint of legal values
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        
-        #self.value = self.random_value()
-        #return
-
         max_abs_mut = self.mutation_max_step        
-        if random() < 0.5:
+        if random.random() < 0.5:
             # mutate downwards
             #max_abs_mut = (self.value - self.min_value) * self.mutation_speed
-            value = self.value - uniform(0, max_abs_mut)
+            value = self.value - random.uniform(0, max_abs_mut)
         else:
             #max_abs_mut =  (self.max_value - self.value) * self.mutation_speed
-            value = self.value + uniform(0, max_abs_mut)
+            value = self.value + random.uniform(0, max_abs_mut)
             
         self.set_value(value)
     
@@ -153,7 +163,7 @@ class FloatGene(BaseGene):
         Generates a plausible random value
         for this gene.
         """
-        return uniform(self.min_value, self.max_value)    
+        return random.uniform(self.min_value, self.max_value)    
 
 
 class IntGene(BaseGene):
@@ -198,31 +208,44 @@ class IntGene(BaseGene):
         """
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        
-        mut_amt = randrange(1, self.mutation_range+1)
-        if random() < 0.5:
+        return self.mutate_gauss()
+                
+        mut_amt = random.randrange(1, self.mutation_range+1)
+        if random.random() < 0.5:
             mut_amt = -mut_amt
         value = self.value + mut_amt    
         self.set_value(value)
         
+    def mutate_triangular(self):
+        try:
+            mode = ((self.max_value -self.value) / (self.max_value - self.min_value)/2)
+        except:
+            mode = None
+        self.value = random.triangular(self.min_value, self.max_value, mode)
+        return 
         
+    def mutate_gauss(self):
+        sigma = float(abs(self.max_value - self.min_value)) / 100
+        value = random.gauss(self.value, sigma)
+        self.set_value(value)
+      
         
     def random_value(self):
         """
         return a legal random value for this gene
         which is in the range [self.min_value, self.max_value]
         """
-        return randrange(self.min_value, self.max_value+1)
+        return random.randrange(self.min_value, self.max_value+1)
     
 
     def __add__(self, other):
         """
         produces the phenotype resulting from combining
         this gene with another gene in the pair
-        returns a new IntGene, based on a random choice between the two and their mean
+        returns a new IntGene, based on a random random.choice between the two and their mean
         """
         mean_value = int((self.value + other.value) / 2)
-        new_value = choice([self.value, mean_value, other.value])
+        new_value = random.choice([self.value, mean_value, other.value])
         return IntGene(value=new_value, min_value=self.min_value, max_value=self.max_value,
                     mutation_range = self.mutation_range)
 
@@ -258,15 +281,15 @@ class DiscreteGene(BaseGene):
         """
         returns a random allele
         """
-        return choice(self.alleles)
+        return random.choice(self.alleles)
     
     def __add__(self, other):
         """
         was: determines the phenotype, subject to dominance properties
-        is: random choice
+        is: random random.choice
         """
         #new code
-        new_value=choice([self.value, other.value])
+        new_value=random.choice([self.value, other.value])
         return DiscreteGene(value=new_value, alleles=self.alleles)
 
     
@@ -282,7 +305,7 @@ class BitGene(BaseGene):
         """
         Produces the 'phenotype' as xor of gene pair values
         """
-        value = choice([self.value, other.value])
+        value = random.choice([self.value, other.value])
         return BitGene(value=value)
         
     def mutate(self):
@@ -297,7 +320,7 @@ class BitGene(BaseGene):
         """
         Returns a legal random (boolean) value
         """
-        if random() < 0.5:
+        if random.random() < 0.5:
             return 1
         else:
             return 0

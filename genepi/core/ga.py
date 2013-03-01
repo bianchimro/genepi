@@ -38,10 +38,23 @@ class GeneticAlgorithm(object):
         #default crossover and selections are handled by population
         self.crossover_method = options.get('crossover_method', None)
         self.crossover_probability = options.get('crossover_probability', 0.5)
-        self.selection_method = options.get('selection_method', None)
 
+        
+
+
+        self.selection_method = options.get('selection_method', None)
+        
+        #elitsm
         self.elitism = options.get('elitism', True)
         self.num_parents = options.get('num_parents', 2)
+        
+        
+        #mutation wrapper
+        self.mutation_wrapper_method = options.get('mutation_wrapper_method', None)
+        #crossover wrapper
+        self.crossover_wrapper_method = options.get('crossover_wrapper_method', None)
+        
+        
         
         cache_instance = options.get('cache_instance', None)
         if cache_instance is None:
@@ -62,10 +75,13 @@ class GeneticAlgorithm(object):
                 crossover_method=self.crossover_method,
                 crossover_probability=self.crossover_probability,
                 elitism=self.elitism,
-                num_parents=self.num_parents)
+                num_parents=self.num_parents,
+                mutation_wrapper_method=self.mutation_wrapper_method,
+                crossover_wrapper_method=self.crossover_wrapper_method)
 
         self.generation = 0
         self.population_stats = []
+        self.current_stats = None
 
     
     def initialize(self):
@@ -115,6 +131,7 @@ class GeneticAlgorithm(object):
         
                 
         self.population_stats.append(stats)
+        self.current_stats = stats
         
         
         if self.generation == 0:
@@ -139,7 +156,7 @@ class GeneticAlgorithm(object):
         
         
     def evolve_population(self, **options):
-        new_population = self.population.evolve()
+        new_population = self.population.evolve(**options)
         self.population = new_population
         self.generation = new_population.generation_number
          
@@ -154,7 +171,7 @@ class GeneticAlgorithm(object):
         while 1:
             if self.should_terminate():
                 break
-            self.evolve_population(**options)
+            self.evolve_population(global_stats=self.population_stats, last_stats=self.current_stats, ga_engine=self)
             self.evaluate_population(**options)            
                      
         return self.best_individual()

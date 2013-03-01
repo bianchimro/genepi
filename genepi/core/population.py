@@ -40,13 +40,14 @@ class Population(object):
         if self.crossover_method is None:
             self.crossover_method = single_point_crossover
         self.crossover_probability = options.get('crossover_probability', 0.5)
-
+        
         #crossover wrapper
         self.crossover_wrapper_method = options.get('crossover_wrapper_method', None)
         
         #mutation wrapper
         self.mutation_wrapper_method = options.get('mutation_wrapper_method', None)
         
+
         #internal state
         self.generation_number = 0
         self.sorted = False
@@ -94,7 +95,6 @@ class Population(object):
         self.sort()
         
     def scale_individuals(self, stats):
-        
         ref = (stats['max_score'] - stats['min_score']) + 1
             
         for individual in self.individuals:
@@ -108,16 +108,18 @@ class Population(object):
         self.current_scaled_scores = [x.score for x in self.individuals]
     
     
-    def should_crossover(self):
+    def should_crossover(self, **options):
+        probability = options.get('crossover_probability', None)
+        probability = probability or self.crossover_probability
         coin = random.random()
-        if coin <= self.crossover_probability:
+        if coin <= probability:
             return True
         return False
         
         
-    def crossover_wrapper(self, parents):
+    def crossover_wrapper(self, parents, **options):
         if self.crossover_wrapper_method:
-            return self.crossover_wrapper_method(self, parents)
+            return self.crossover_wrapper_method(parents[0], parents[1], **options)
         return self.crossover(parents[0], parents[1])
         
     def crossover(self, genome_a, genome_b):
@@ -126,15 +128,24 @@ class Population(object):
         else:
             meth = self.crossover_method
         return meth(genome_a, genome_b)
+        
+        
+    def apply_crossover(self, parents, **options):
+        if self.should_crossover(**options):
+            return self.crossover(parents[0], parents[1])
+            #new_individual = method(parents[0], parents[1])
+        else:
+            new_individual = random.choice(parents).copy()
+        return new_individual
     
     
-    def mutation_wrapper(self, genome):
+    def mutation_wrapper(self, genome, **options):
         if self.mutation_wrapper_method:
-            return self.mutation_wrapper_method(self, genome)
+            return self.mutation_wrapper_method(self, genome, **options)
         return genome.mutate()
         
             
-    def evolve(self):
+    def evolve(self, **options):
         new_individuals = []
         num_individuals = 0
         
@@ -148,12 +159,9 @@ class Population(object):
             #breeding and crossover
             parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
-            if self.should_crossover():
-                new_individual = self.crossover_wrapper(parents)
-            else:
-                new_individual = random.choice(parents).copy()
-            #mutate
-            self.mutation_wrapper(new_individual)
+            new_individual = self.crossover_wrapper(parents, **options)
+            #mutatec
+            self.mutation_wrapper(new_individual, **options)
             new_individuals.append(new_individual)
             num_individuals += 1
     
