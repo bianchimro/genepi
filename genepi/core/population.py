@@ -123,6 +123,8 @@ class Population(object):
             parents = random.sample(parents_candidates, 2)
             if self.should_crossover():
                 new_individual = self.crossover_method(parents[0], parents[1])
+            else:
+                new_individual = random.choice(parents).copy()
             #mutate
             new_individual.mutate()
             new_individuals.append(new_individual)

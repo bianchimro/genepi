@@ -38,6 +38,7 @@ class GeneticAlgorithm(object):
         
         #default crossover and selections are handled by population
         self.crossover_method = options.get('crossover_method', None)
+        self.crossover_probability = options.get('crossover_probability', 0.5)
         self.selection_method = options.get('selection_method', None)
 
         self.elitism = options.get('elitism', True)
@@ -60,6 +61,7 @@ class GeneticAlgorithm(object):
                 optimization_mode=self.optimization_mode,
                 selection_method=self.selection_method,
                 crossover_method=self.crossover_method,
+                crossover_probability=self.crossover_probability,
                 elitism=self.elitism,
                 num_parents=self.num_parents)
 
@@ -103,11 +105,28 @@ class GeneticAlgorithm(object):
         avg_score = sum(scores) / len(scores)
         min_score = min(scores)
         max_score = max(scores)
-
-        stats = { 'avg_score' : avg_score, 'min_score' : min_score, 'max_score' : max_score}
-        self.population_stats.append(stats)
-        print stats
         
+        if self.optimization_mode == 'max':
+            top_key = 'max_score'
+        else:
+            top_key = 'min_score'
+
+        stats = { 'avg_score' : avg_score, 'min_score' : min_score, 'max_score' : max_score,
+            'generation' : self.generation }
+        
+                
+        self.population_stats.append(stats)
+        
+        
+        if self.generation == 0:
+            stats['idle_cycles'] = 0
+        else:
+            if self.population_stats[self.generation][top_key] == self.population_stats[self.generation-1][top_key]:
+                stats['idle_cycles'] = self.population_stats[self.generation-1]['idle_cycles'] +  1
+            else:
+                stats['idle_cycles'] = 0
+
+        print stats
         if self.storage:
             self.storage.write_population_stats(self.generation, stats)
             

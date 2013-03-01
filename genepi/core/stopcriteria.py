@@ -4,14 +4,12 @@ def convergence_stop(ga_engine, **options):
     num_generations = options.get('num_generations', 10)
     if ga_engine.generation < num_generations:
         return False
-
     stats = ga_engine.population_stats
     if ga_engine.optimization_mode == 'min':
         key = 'min_score'
     else:
         key = 'max_score'
-
-    scores = [x[key] for x in stats[:-num_generations]]
+    scores = [x[key] for x in stats[-num_generations:]]
     return len(set(scores)) == 1
 
 

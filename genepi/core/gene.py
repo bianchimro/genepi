@@ -131,6 +131,10 @@ class FloatGene(BaseGene):
         gene's current value from either endpoint of legal values
         perform mutation IN-PLACE, ie don't return mutated copy
         """
+        
+        #self.value = self.random_value()
+        #return
+        
         if random() < 0.5:
             # mutate downwards
             max_abs_mut = (self.value - self.min_value) * self.mutation_speed

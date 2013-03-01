@@ -18,7 +18,7 @@ class Genome(object):
         self.mutation_probability = mutation_probability
         
     def dict_value(self):
-        out = {}
+        out = OrderedDict()
         for name in self.genes_dict:
             out[name] = self.genes_dict[name].value
         return out
