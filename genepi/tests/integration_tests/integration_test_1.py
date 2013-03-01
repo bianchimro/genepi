@@ -27,7 +27,7 @@ def test_1():
         crossover_method = single_point_crossover,
         selection_method = roulette_select,
         termination_criteria=[raw_score_stop], stop_score=0)
-    algo.evolve()
+    algo.evolve(debug=True)
     bi = algo.best_individual()
     print bi.score
     print bi.dict_value()

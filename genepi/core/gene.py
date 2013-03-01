@@ -208,8 +208,6 @@ class IntGene(BaseGene):
         """
         perform mutation IN-PLACE, ie don't return mutated copy
         """
-        return self.mutate_gauss()
-                
         mut_amt = random.randrange(1, self.mutation_range+1)
         if random.random() < 0.5:
             mut_amt = -mut_amt
