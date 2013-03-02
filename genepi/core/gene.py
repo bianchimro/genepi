@@ -379,3 +379,63 @@ class XorBitGene(BitGene):
         """
         return BitGene(self.value ^ other.value)
     
+
+#TODO: refactor as needed
+class CharGene(BaseGene):
+    """
+    Gene that holds a single ASCII character,
+    as a 1-byte string
+    """
+    
+    
+    def __init__(self, value=None, **options):
+        self.min_value = chr(0)
+        self.max_value = chr(127)
+        self.mutation_range = options.get('mutation_range', 10)
+        super(CharGene, self).__init__(value=value, **options)
+        
+        
+    
+    def __repr__(self):
+        """
+        Returns safely printable value
+        """
+        return str(self.value)
+    
+    def mutate(self):
+        """
+        perform gene mutation
+    
+        perform mutation IN-PLACE, ie don't return mutated copy
+        """
+        self.value=self.random_value()
+        return
+        
+        value = ord(self.value) + random.randrange(-self.mutation_range, self.mutation_range + 1)
+    
+        # if the gene has wandered outside the alphabet,
+        # rein it back in
+        if value < self.min_value:
+            self.value = self.min_value
+        elif value > self.max_value:
+            self.value = self.max_value
+        
+        else:
+            self.value=chr(value)
+    
+    def random_value(self):
+        """
+        return a legal random value for this gene
+        which is in the range [self.min_value, self.max_value]
+        """
+        return chr(random.randrange(ord(self.min_value), ord(self.max_value)+1))
+    
+    def __add__(self, other):
+        """
+        produces the phenotype resulting from combining
+        this gene with another gene in the pair
+        
+        returns an int value, based on a formula of higher
+        numbers dominating
+        """
+        return max(self.value, other.value)
