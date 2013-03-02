@@ -68,7 +68,70 @@ class BaseGene(object):
 
     
 
-class FloatGene(BaseGene):
+
+class BaseNumberGene(BaseGene):
+    """
+    """
+    
+    max_value = sys.maxint
+    min_value = -sys.maxint
+    
+    def __init__(self, **options):
+        self.mutation_method_name = options.get('mutation_method', 'mutate_base')
+        self.mutation_method = getattr(self, self.mutation_method_name)
+        super(BaseNumberGene, self).__init__(**options)
+    
+    
+    def set_value(self, value):
+        # if the gene has wandered outside the alphabet,
+        # bring it back in
+        if value <= self.min_value:
+            self.value = self.min_value
+        elif value >= self.max_value:
+            value = self.max_value
+        else:
+            self.value = value
+    
+    
+    def mutate(self):
+        return self.mutation_method()
+
+    
+    def mutate_triangular(self):
+        try:
+            mode = (float(self.max_value -self.value) / float(self.max_value - self.min_value)/2)
+        except:
+            mode = None
+        self.value = random.triangular(self.min_value, self.max_value, mode)
+        return 
+    
+    def mutate_gauss(self):
+        sigma = float(abs(self.max_value - self.min_value)) / 10
+        value = random.gauss(self.value, sigma)
+        self.set_value(value)
+        
+    
+    def mutate_random(self):
+        """
+        Mutate this gene's value by a random amount
+        within the range, which is determined by
+        multiplying self.mutation_speed by the distance of the
+        gene's current value from either endpoint of legal values
+        perform mutation IN-PLACE, ie don't return mutated copy
+        """
+        self.value = self.random_value()
+        
+    
+    def random_value(self):
+        """
+        Generates a plausible random value
+        for this gene.
+        """
+        return random.uniform(self.min_value, self.max_value)    
+
+
+
+class FloatGene(BaseNumberGene):
     """
     A gene whose value is a floating point number
 
@@ -102,7 +165,12 @@ class FloatGene(BaseGene):
             raise ValueError("Mutation speed should be between 0 and 1")
         if value:
             value = float(value)
+
         super(FloatGene, self).__init__(value=value, **options)
+        
+        self.mutation_method_name = options.get('mutation_method', 'mutate_base')
+        self.mutation_method = getattr(self, self.mutation_method_name)
+        
     
     def __add__(self, other):
         """
@@ -114,32 +182,8 @@ class FloatGene(BaseGene):
         return FloatGene(value=new_value, min_value=self.min_value, max_value=self.max_value)     
     
     
-    def set_value(self, value):
-        # if the gene has wandered outside the alphabet,
-        # bring it back in
-        if value <= self.min_value:
-            self.value = self.min_value
-        elif value >= self.max_value:
-            value = self.max_value
-        else:
-            self.value = value
     
-    
-    def mutate_triangular(self):
-        try:
-            mode = ((self.max_value -self.value) / (self.max_value - self.min_value)/2)
-        except:
-            mode = None
-        self.value = random.triangular(self.min_value, self.max_value, mode)
-        return 
-    
-    def mutate_gauss(self):
-        sigma = float(abs(self.max_value - self.min_value)) / 100
-        value = random.gauss(self.value, sigma)
-        self.set_value(value)
-              
-    
-    def mutate(self):
+    def mutate_base(self):
         """
         Mutate this gene's value by a random amount
         within the range, which is determined by
@@ -166,7 +210,7 @@ class FloatGene(BaseGene):
         return random.uniform(self.min_value, self.max_value)    
 
 
-class IntGene(BaseGene):
+class IntGene(BaseNumberGene):
     """
     Implements a gene whose values are ints,
     constrained within the min_value,max_value range
@@ -190,21 +234,12 @@ class IntGene(BaseGene):
         self.mutation_range = mutation_range
 
         super(IntGene, self).__init__(value=value, **options) 
-                            
-
-
-    def set_value(self, value):
-        # if the gene has wandered outside the alphabet,
-        # bring it back in
-        if value < self.min_value:
-            value = value + self.min_value
-            self.value = self.min_value
-        elif value > self.max_value:
-            self.value = self.max_value
-        else:
-            self.value = value
         
-    def mutate(self):
+        self.mutation_method_name = options.get('mutation_method', 'mutate_base')
+        self.mutation_method = getattr(self, self.mutation_method_name)                 
+
+        
+    def mutate_base(self):
         """
         perform mutation IN-PLACE, ie don't return mutated copy
         """
@@ -213,28 +248,6 @@ class IntGene(BaseGene):
             mut_amt = -mut_amt
         value = self.value + mut_amt    
         self.set_value(value)
-        
-    def mutate_triangular(self):
-        try:
-            mode = ((self.max_value -self.value) / (self.max_value - self.min_value)/2)
-        except:
-            mode = None
-        self.value = random.triangular(self.min_value, self.max_value, mode)
-        return 
-        
-    def mutate_gauss(self):
-        sigma = float(abs(self.max_value - self.min_value)) / 100
-        value = random.gauss(self.value, sigma)
-        self.set_value(value)
-      
-        
-    def random_value(self):
-        """
-        return a legal random value for this gene
-        which is in the range [self.min_value, self.max_value]
-        """
-        return random.randrange(self.min_value, self.max_value+1)
-    
 
     def __add__(self, other):
         """
@@ -247,6 +260,12 @@ class IntGene(BaseGene):
         return IntGene(value=new_value, min_value=self.min_value, max_value=self.max_value,
                     mutation_range = self.mutation_range)
 
+    def random_value(self):
+        """
+        Generates a plausible random value
+        for this gene.
+        """
+        return random.randint(self.min_value, self.max_value) 
 
 class DiscreteGene(BaseGene):
     """
@@ -286,7 +305,6 @@ class DiscreteGene(BaseGene):
         was: determines the phenotype, subject to dominance properties
         is: random random.choice
         """
-        #new code
         new_value=random.choice([self.value, other.value])
         return DiscreteGene(value=new_value, alleles=self.alleles)
 
