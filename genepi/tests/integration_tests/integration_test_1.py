@@ -24,13 +24,12 @@ def fitness_function(genome):
 # we want to minimize the sum of a list of 50 integer numbers from 0 to 10   
 def test_1():
     
-    protogenes = protogene_factory(IntGene, 'x', 50, min_value=0, max_value=10)
+    protogenes = protogene_factory(IntGene, 'x', 50, min_value=0, max_value=10, mutation_probability = 0.1)
     protogenome = ProtoGenome(protogenes) 
     
     algo = GeneticAlgorithm(protogenome, fitness_function, 
         population_size = 200,
         optimization_mode = 'min',
-        mutation_probability = 0.1,
         num_parents = 4,
         crossover_method = single_point_crossover,
         selection_method = select_from_top,

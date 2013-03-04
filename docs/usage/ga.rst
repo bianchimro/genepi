@@ -51,7 +51,12 @@ Crossover settings
 ------------------
 
 
-Mutation settings
+Cache settings
+--------------
+
+
+Storage settings
+----------------
 
 
 

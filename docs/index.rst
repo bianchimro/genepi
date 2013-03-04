@@ -38,8 +38,16 @@ Examples
 --------
 .. toctree::
    :maxdepth: 2
+   
     examples/intro
 
+
+API DOCS
+========
+.. toctree::
+   :maxdepth: 1
+   
+   apidocs/core
 
 Indices and tables
 ==================
