@@ -32,12 +32,11 @@ Until then, here is a little example.
     # we want to minimize the sum of a list of 50 integer numbers from 0 to 10   
         
     protogenes = protogene_factory(IntGene, 'x', 50, min_value=0, max_value=10)
-    protogenome = ProtoGenome(protogenes) 
+    protogenome = ProtoGenome(protogenes, mutation_probability = 0.1) 
         
     algo = GeneticAlgorithm(protogenome, fitness_function, 
         population_size = 200,
         optimization_mode = 'min',
-        mutation_probability = 0.1,
         num_parents = 4,
         crossover_method = single_point_crossover,
         selection_method = select_from_top,
