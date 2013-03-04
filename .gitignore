@@ -14,3 +14,9 @@
 #sqlite
 *.sqlite
 
+
+# Compiled docs
+*.rst~
+/doc/*.html
+/doc/_build
+
