@@ -20,7 +20,7 @@ def findname(genome):
     return score
 
     
-def test_1():
+def test_5():
     num_letters = len("genepi")
     protogenes = protogene_factory(CharGene, 'x', num_letters)
     protogenome = ProtoGenome(protogenes, mutation_probability = 0.05) 
@@ -39,4 +39,6 @@ def test_1():
     print bi.score
     print "".join(bi.list_value())
     
-    
+
+if __name__ == '__main__':
+    test_5()

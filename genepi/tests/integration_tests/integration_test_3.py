@@ -58,3 +58,6 @@ def test_3():
     print "*" * 10
     print bi.dict_value()
     return bi.score
+    
+if __name__ == '__main__':
+    test_3()

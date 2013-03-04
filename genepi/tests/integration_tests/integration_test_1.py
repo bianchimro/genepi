@@ -43,4 +43,6 @@ def test_1():
     print bi.score
     print bi.dict_value()
     
-    
+
+if __name__ == '__main__':
+    test_1()

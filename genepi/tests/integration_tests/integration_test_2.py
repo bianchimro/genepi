@@ -17,7 +17,7 @@ def schafferF6(genome):
     return score
 
     
-def test_1():
+def test_2():
     pg_1 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=10)
     pg_2 = ProtoGene(FloatGene, max_value=150.0, min_value=-150.0, mutation_max_step=10)
     protogenes = [pg_1, pg_2]
@@ -37,4 +37,6 @@ def test_1():
     print bi.score
     print bi.dict_value()
     
-    
+
+if __name__ == '__main__':
+    test_2()
