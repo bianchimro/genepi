@@ -1,3 +1,7 @@
+"""
+This module contains Population class and some defaults
+"""
+
 from copy import copy, deepcopy
 import random
 from genepi.core.crossover import single_point_crossover
@@ -10,12 +14,31 @@ from genepi.core.selectors import select_from_top, roulette_select
 POPULATION_DEFAULT_SIZE = 100
 
 class Population(object):
-    """A population is a collection of individuals"""
+    """
+    A population is a collection of individuals.
+    Normally, this class should be instantiated by a :class:`genepi.core.ga.GeneticAlgorithm` object.
+    
+    :param protogenome: instance of :class:`genepi.core.protogenome.Protogenome`
+    :param size: integer indicating the size (number of individuals) of the population.\
+    (defaults to :data:`genepi.core.population.POPULATION_DEFAULT_SIZE`)
+    
+    The following other parameters can be passed as **options:
+    
+    :param optimization_mode: 'min' or 'max', defaults to 'min'
+    :param selection_method: the selection method to be used, defaults to :function: `genepi.core.selectors.select_from_top`
+    :param num_parents: number of parents chosen by the selection method
+    :param elitism: whether use or not elitism, defaults to True
+    
+    
+    
+    
+    """
 
     individuals = []
     size = 100
 
     def __init__(self, protogenome, size=POPULATION_DEFAULT_SIZE, **options):
+
         
         self.protogenome = protogenome
         self.size = size
@@ -54,6 +77,12 @@ class Population(object):
         
     
     def initialize(self, individuals=[]):
+        """
+        Initialize the population with individuals, represented by 
+        :class:`genepi.core.genome.Genome` instances. 
+        
+        :param individuals: an optional list of genome instance to be used to initialize the population.
+        """
         new_individuals = []
         for individual in individuals:
             new_individual = individual.copy()
@@ -172,6 +201,10 @@ class Population(object):
         
         
     def cmp_individual(self, a, b):
+        """
+        Compares individuals, according to their score. Comparing takes in account the population\
+        optimization_mode.
+        """
         #TODO: document, this is a bit tricky
         if self.optimization_mode == 'min':
             return cmp(a.score, b.score)
@@ -180,17 +213,30 @@ class Population(object):
         
         
     def sort(self):
+        """
+        sorts individual using internal cmp_individual method and sets sorted flag to True
+        """
         self.individuals.sort(self.cmp_individual)
         self.sorted = True
     
     
     def best_individual(self):
+        """
+        Returns best individual. Individual are sorted if sorted flag is false.
+        """
         if not self.sorted:
             self.sort()
         return self.individuals[0]
         
         
     def copy(self, individuals=[]):
+        """
+        Returns a new instance of :class:`genepi.core.population.Population` with the same
+        options and individuals of this one. Individuals are copied.
+        
+        :param individuals: an optional list of individuals (:class:`genepi.core.genome.Genome` instances.)\
+        to initialize the population
+        """
         if not individuals:
             for individual in self.individuals:
                 new_individual = individual.copy()

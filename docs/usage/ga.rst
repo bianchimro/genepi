@@ -2,8 +2,8 @@ Optimizing with the genetic algorithm
 =====================================
 
 In general, to use genepi as an optimization framework, you'll have to create an instance
-of the GeneticAlgorithm class, with parameters suitable for your optimization needs, and
-call its "evolve" method.
+of the :class:`genepi.core.ga.GeneticAlgorithm` class, with parameters suitable for your optimization needs, and
+call its :meth:`genepi.core.ga.GeneticAlgorithm.evolve` method.
 
 Such parameters consist of:
 
@@ -45,6 +45,30 @@ criteria, or an exception will be raised.
 
 Selection settings
 ------------------
+
+Selection controls how individuals are chosen from a population at generation x, in order
+to create generation x+1.
+
+Selection is the first operation and comes before the optional crossover and mutation 
+operations. With this in mind, selection can be seen as a method of choosing the potential
+parents of all the individuals in the next generation.
+
+
+Implementing selection methods
+..............................
+
+
+In genepi, selection is implemented as a function that takes two parameters:
+
+* an instance of :class:`genepi.core.population.Population` . The population must already
+  be evaluated and sorted when passed to selection function
+* a number of individuals to be selected
+
+
+Elitism
+-------
+
+
 
 
 Crossover settings

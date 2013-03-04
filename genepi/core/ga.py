@@ -1,11 +1,21 @@
-"""Contains genetic algorithm glasses"""
+"""
+This module contains genetic algorithm class
+"""
 
 from genepi.core.population import Population, POPULATION_DEFAULT_SIZE
 from genepi.cache.base import BaseCache, DictCache
 from genepi.core import stopcriteria
 
+
 class GeneticAlgorithm(object):
-    """Genetic algorithm class"""
+    """
+    Genetic algorithm class
+    
+    :param protogenome: instance of :class:`genepi.core.protogenome.Protogenome`
+    :param population_size: size of the population
+    
+    
+    """
     
     population_size = 100
     selection_method = None
@@ -103,19 +113,35 @@ class GeneticAlgorithm(object):
         return False
         
     def store_individual(self, hash, individual):
+        """
+        Store an individual in the storage backend.
+        """
         if self.storage:    
             self.storage.write_individual(hash, self.generation, individual )
 
         
     def evaluate_population(self, **options):
+        """
+        Evaluate current population, the following operations are performed:    
+        
+        * run fitness_evaluator (compute score on each individual)
+        * calculate statistics
+        * scale population individuals (compute scaled_score on each individual)
+        """
         self.population.fit_individuals(self.fitness_evaluator, self.cache, eval_callback=self.store_individual)
         stats = self.stat_population(**options)
         self.population.scale_individuals(stats)
         
         
     def stat_population(self, **options):
-        #TODO: implement
-        """stats for current population: min max average etc.."""
+        """
+        Compute statistics for current population: min max and average scores, idle cycles.
+        If a storage is set, stats are written to storage backend.
+        After computation, stats are stored in population_stats property, that contains stats
+        for all generations. 
+        the current_generation property is set to stats.
+        
+        """
         scores = [individual.score for individual in self.population.individuals]
         avg_score = sum(scores) / len(scores)
         min_score = min(scores)

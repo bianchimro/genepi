@@ -2,7 +2,27 @@ genepi.core.ga
 ==============
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    
 .. automodule:: genepi.core.ga
+   :members:
+
+
+genepi.core.population
+======================
+
+.. toctree::
+   :maxdepth: 2
+
+.. automodule:: genepi.core.population
+   :members:
+   
+   
+genepi.core.selectors
+======================
+
+.. toctree::
+   :maxdepth: 2
+
+.. automodule:: genepi.core.selectors
    :members:

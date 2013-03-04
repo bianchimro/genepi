@@ -39,15 +39,16 @@ Examples
 .. toctree::
    :maxdepth: 2
    
-    examples/intro
+   examples/intro
 
 
-API DOCS
+API docs
 ========
 .. toctree::
    :maxdepth: 1
    
    apidocs/core
+   
 
 Indices and tables
 ==================

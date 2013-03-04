@@ -1,6 +1,9 @@
 Introduction
 ============
 
+**genepi** is a genetic algorithm-based optimization framework written in Python.
+
+
 (Motivation of genepi, inspiration, and ideas behind it.)
 ...
 ...
