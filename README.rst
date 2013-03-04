@@ -4,7 +4,20 @@ genepi
 .. image:: https://travis-ci.org/bianchimro/genepi.png?branch=master
 
 **genepi** is a genetic algorithm framework written in python.
-Documentation coming soon.
+
+
+
+
+Documentation
+-------------
+
+Documentation is being built with Sphinx and will come soon. You can build a partial
+documentation by installing sphinx and issuing
+
+.. code-block:: bash
+   make html
+   
+in the docs folder of genepi source.
 
 Until then, here is a little example.
 
