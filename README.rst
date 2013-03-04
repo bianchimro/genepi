@@ -14,7 +14,7 @@ Documentation
 Documentation is being built with Sphinx and will come soon. You can build a partial
 documentation by installing sphinx and issuing
 
-.. code-block:: bash
+.. code-block::
    make html
    
 in the docs folder of genepi source.
