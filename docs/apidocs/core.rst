@@ -26,3 +26,13 @@ genepi.core.selectors
 
 .. automodule:: genepi.core.selectors
    :members:
+   
+
+genepi.core.crossover
+======================
+
+.. toctree::
+   :maxdepth: 2
+
+.. automodule:: genepi.core.crossover
+   :members:
