@@ -32,7 +32,9 @@ def genetic_fitness(genome):
         crossover_method = values['crossover_method'],
         crossover_probability =values['crossover_probability'],
         selection_method = select_from_top,
-        termination_criteria = convergence_stop, num_generations=5)
+        termination_criteria = convergence_stop, 
+        termination_criteria_options={'num_generations':5}
+    )
         
     algo.evolve()
     bi = algo.best_individual()
@@ -51,7 +53,8 @@ def test_3():
     algo = GeneticAlgorithm(protogenome, genetic_fitness, 
         population_size = 10,
         optimization_mode = 'min',
-        termination_criteria = convergence_stop, num_generations=5)
+        termination_criteria = convergence_stop, 
+        termination_criteria_options={'num_generations':5})
         
     algo.evolve(debug=True)
     bi = algo.best_individual()

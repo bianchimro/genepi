@@ -50,7 +50,9 @@ def test_4():
         crossover_method = [single_point_crossover, genome_add],
         crossover_probability = 0.5,
         selection_method = select_from_top,
-        termination_criteria = convergence_stop, num_generations=50)
+        termination_criteria = convergence_stop,
+        termination_criteria_options={'num_generations':50}
+    )
         
     algo.evolve(debug=True)
     bi = algo.best_individual()

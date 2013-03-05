@@ -32,7 +32,9 @@ def test_5():
         crossover_method = single_point_crossover,
         crossover_probability = 0.5,
         selection_method = select_from_top,
-        termination_criteria = raw_score_stop, stop_score=0)
+        termination_criteria = raw_score_stop,
+        termination_criteria_options={'stop_score':0}
+    )
         
     algo.evolve(debug=True)
     bi = algo.best_individual()
