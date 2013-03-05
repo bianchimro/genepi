@@ -32,6 +32,7 @@ Usage
    
    usage/quickstart
    usage/ga
+   usage/genes
    usage/extending
 
 Examples
