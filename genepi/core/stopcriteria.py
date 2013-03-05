@@ -1,4 +1,11 @@
+"""
+Built-in stop criteria
+"""
+
 def convergence_stop(ga_engine, **options):
+    """
+    Stops evolution when ...
+    """
     #pop = ga_engine.population
     #return pop.individuals[0].score == pop.individuals[-1].score
     num_generations = options.get('num_generations', 10)
@@ -16,6 +23,10 @@ def convergence_stop(ga_engine, **options):
    
    
 def raw_score_stop(ga_engine, **options):
+    """
+    Stops evolution when the score of the best individual reaches a predefined stop_score
+    this method is aware of current optimization mode (min vs max)
+    """
     stop_score = options.get('stop_score')
     if ga_engine.optimization_mode == 'min':
         return ga_engine.best_individual().score <= stop_score
