@@ -30,7 +30,9 @@ def test_2():
         crossover_method = single_point_crossover,
         crossover_probability = 0.5,
         selection_method = roulette_select,
-        termination_criteria = convergence_stop, num_generations=20)
+        termination_criteria = convergence_stop, 
+        termination_criteria_options={'num_generations':20}
+    )
         
     algo.evolve(debug=True)
     bi = algo.best_individual()

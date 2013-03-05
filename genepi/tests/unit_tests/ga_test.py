@@ -62,6 +62,7 @@ class GeneticAlgorithmTest(unittest.TestCase):
         for individual in algo.population.individuals:
             assert individual.score == fitness_evaluator(individual)
 
+
     def test_best_individual(self):
         protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
         protogenome = ProtoGenome([protogene])
@@ -90,8 +91,14 @@ class GeneticAlgorithmTest(unittest.TestCase):
     def test_evolve(self):
         protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=10)
         protogenome = ProtoGenome([protogene], mutation_probability=0.1)
-        algo = GeneticAlgorithm(protogenome, fitness_evaluator, termination_criteria=[raw_score_stop,convergence_stop], stop_score=0)
+        algo = GeneticAlgorithm(
+            protogenome, 
+            fitness_evaluator, 
+            termination_criteria=[raw_score_stop,convergence_stop],
+            termination_criteria_options = [{'stop_score':0}]    
+            )
         algo.evolve()
+        
         
     def test_evolve_storage(self):
         storage_instance = SqliteStorage("test.sqlite")
@@ -102,9 +109,13 @@ class GeneticAlgorithmTest(unittest.TestCase):
         algo.evolve()
 
    
-        
     def test_evolve_2(self):
         protogene = ProtoGene(IntGene, 'a', min_value=0, max_value=100)
         protogenome = ProtoGenome([protogene], mutation_probability=0.1)
-        algo = GeneticAlgorithm(protogenome, fitness_evaluator, termination_criteria=[raw_score_stop,convergence_stop], stop_score=0)
+        algo = GeneticAlgorithm(
+            protogenome, 
+            fitness_evaluator, 
+            termination_criteria=[raw_score_stop,convergence_stop], 
+            termination_criteria_options = [{'stop_score':0},{'num_generations':20}]
+        )
         algo.evolve()

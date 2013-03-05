@@ -21,6 +21,7 @@ class GeneticAlgorithm(object):
     selection_method = None
     step_callback = None
     termination_criteria = None
+    termination_criteria_options = None
     
     fitness_evaluator = None
     optimization_mode = 'min'
@@ -30,6 +31,8 @@ class GeneticAlgorithm(object):
     def __init__(self, 
                     protogenome,
                     fitness_evaluator,
+                    termination_criteria=stopcriteria.convergence_stop,
+                    termination_criteria_options={},
                     **options):
                  
         self.protogenome = protogenome
@@ -39,9 +42,13 @@ class GeneticAlgorithm(object):
         self.population_size = options.get('population_size', POPULATION_DEFAULT_SIZE)
         
         self.optimization_mode = options.get('optimization_mode', 'min')
-        self.termination_criteria = options.get('termination_criteria', None)
-        if self.termination_criteria is None:
-            self.termination_criteria = stopcriteria.convergence_stop
+ 
+        self.termination_criteria = termination_criteria 
+        self.termination_criteria_options = termination_criteria_options 
+        
+        if type(self.termination_criteria) == type(list):
+            if type(self.termination_criteria_options) != type(list):
+                raise ValueError("You must pass options for each termination criteria")
         
         self.step_callback = options.get('step_callback', None)
         
@@ -102,12 +109,15 @@ class GeneticAlgorithm(object):
         
         
     def should_terminate(self):
+        """
+        Called after each evolution cycle
+        """
         if type(self.termination_criteria) == type(list()):
-            for criterium in self.termination_criteria:
-                if criterium(self, **self.options):
+            for i,criterium in enumerate(self.termination_criteria):
+                if criterium(self, **self.termination_criteria_options[i]):
                     return True
         else:
-            if self.termination_criteria(self, **self.options):
+            if self.termination_criteria(self, **self.termination_criteria_options):
                 return True
                 
         return False

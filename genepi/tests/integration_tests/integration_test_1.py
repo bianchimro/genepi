@@ -33,7 +33,7 @@ def test_1():
         num_parents = 4,
         crossover_method = single_point_crossover,
         selection_method = select_from_top,
-        termination_criteria=[raw_score_stop], stop_score=0)
+        termination_criteria=[raw_score_stop], termination_criteria_options=[{'stop_score':0}])
     
     #main evolution cycle
     algo.evolve(debug=True)

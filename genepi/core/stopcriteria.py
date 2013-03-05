@@ -27,7 +27,10 @@ def raw_score_stop(ga_engine, **options):
     Stops evolution when the score of the best individual reaches a predefined stop_score
     this method is aware of current optimization mode (min vs max)
     """
+
     stop_score = options.get('stop_score')
+    if stop_score is None:
+        raise ValueError("stop score must be passed in termination_criteria_options")
     if ga_engine.optimization_mode == 'min':
         return ga_engine.best_individual().score <= stop_score
     else:
