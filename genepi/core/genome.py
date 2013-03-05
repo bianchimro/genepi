@@ -1,3 +1,7 @@
+"""
+Implements the genome class
+"""
+
 import hashlib
 import json
 import random
@@ -6,8 +10,9 @@ try:
 except:
     from genepi.utils.ordereddict import OrderedDict
 
+
 class Genome(object):
-    """Genome is a collection of genes"""
+    """Genome is a collection of genes."""
     
     genes_dict = OrderedDict()
     score = None

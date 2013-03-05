@@ -1,11 +1,5 @@
 """
 Implements a collection of gene classes
-
-Genes support the following python operators:
-    - + - calculates the phenotype resulting from the
-      combination of a pair of genes
-
-These genes work via classical Mendelian genetics
 """
 
 import sys
@@ -16,15 +10,17 @@ from math import sqrt
 class BaseGene(object):
     """
     Base class from which all the gene classes are derived.
-
-    You cannot use this class directly, because there are
-    some methods that must be overridden.    
+    Must be overridden in order to implement genes usable by genepi
     """
      
     def __init__(self, value=None, **options):
-    
-        # if value is not provided, it will be
-        # randomly generated
+        """
+        if value is not provided, it will be randomly generated
+        
+        :param value: the initial value of the gene
+        :param **options: initialization options
+        
+        """
         if value == None:
             value = self.random_value()   
         self.value = value    
@@ -32,7 +28,7 @@ class BaseGene(object):
     
     def copy(self):
         """
-        returns clone of this gene
+        Returns clone of this gene
         """
         return self.__class__(self.value, **self.options)
     
@@ -40,17 +36,20 @@ class BaseGene(object):
         """
         Combines two genes in a gene pair, to produce an effect
         This is used to determine the gene's phenotype
-        Must be overridden
+        Must be overriden in subclasses
         """
         raise NotImplementedError("Method __add__ must be overridden")
         
     def __eq__(self, other):
+        """
+        Compares two genes by value
+        """
         return self.value == other.value
     
     def mutate(self):
         """
         Perform a mutation on the gene        
-        You MUST override this in subclasses
+        Must be overriden in subclasses
         """
         raise NotImplementedError("method 'mutate' not implemented")
     
@@ -58,7 +57,7 @@ class BaseGene(object):
         """
         Generates a plausible random value
         for this gene.        
-        Must be overridden
+        Must be overriden in subclasses
         """
         raise NotImplementedError("Method 'random_value' not implemented")
               
@@ -71,6 +70,7 @@ class BaseGene(object):
 
 class BaseNumberGene(BaseGene):
     """
+    Base class for numbers
     """
     
     max_value = sys.maxint
