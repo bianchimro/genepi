@@ -187,10 +187,12 @@ class Population(object):
             for individual in parents_candidates:
                 new_individual = individual.copy()
                 new_individuals.append(new_individual)
-            
+                num_individuals += 1
+
+        parents_candidates = self.select_individuals()            
         while num_individuals < self.size:
             #breeding and crossover
-            parents_candidates = self.select_individuals()
+            
             parents = random.sample(parents_candidates, 2)
             new_individual = self.crossover_wrapper(parents, **options)
             #mutate

@@ -20,7 +20,7 @@ def sudoku_fitness(solution):
             c = board.get_col(y, filled_board)
             s = board.get_square(x, y, filled_board)
             
-            score += len(set(r)) + len(set(c)) +  len(set(s))
+ #           score += len(set(r)) + len(set(c)) +  len(set(s))
              
             ok_s = ok_r = ok_c = False
             
@@ -36,7 +36,9 @@ def sudoku_fitness(solution):
                 
             num_ok = [ok_r, ok_c, ok_s]
             num_ok = [x for x in num_ok if x]
-            score += len(num_ok) * 9
+#            score += len(num_ok) * 9
+            
+            score += len(num_ok)
             
     return score        
             
@@ -72,7 +74,8 @@ def crossover_wrapper_method(genome_a, genome_b, **options):
     return out
 
 
-def test_6():
+def test_6():   
+    return
     protogenes = []    
     for square in board.data.keys():
         row = square[0]
@@ -95,19 +98,19 @@ def test_6():
         protogenes.append(ProtoGene(DiscreteGene, name, alleles=alleles))
     
 
-    protogenome = ProtoGenome(protogenes, mutation_probability=0.1)
+    protogenome = ProtoGenome(protogenes, mutation_probability=0.05)
     
     algo = GeneticAlgorithm(protogenome, sudoku_fitness, 
         population_size = 100,
         optimization_mode = 'max',
-        num_parents = 2,
-        #elitism = False,
+        num_parents = 12,
+        elitism = False,
         crossover_method = single_point_crossover,
-        crossover_probability=0.3,
-        mutation_wrapper_method = mutation_wrapper_method,
+        crossover_probability=0.5,
+        #mutation_wrapper_method = mutation_wrapper_method,
         #crossover_wrapper_method = crossover_wrapper_method,
         selection_method = roulette_select,
-        termination_criteria=[raw_score_stop], termination_criteria_options=[{'stop_score':81 * 36 + 81*27}])
+        termination_criteria=[raw_score_stop], termination_criteria_options=[{'stop_score':81 * 3}])
     
     
     algo.evolve(debug=True)
