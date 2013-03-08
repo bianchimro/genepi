@@ -124,17 +124,21 @@ class Population(object):
         self.sort()
         
     def scale_individuals(self, stats):
-        ref = (stats['max_score'] - stats['min_score']) + 1
-            
+
+        if self.optimization_mode == 'max':
+            ref = (stats['max_score']) + 1
+        else:
+            ref = (stats['max_score'] - stats['min_score']) + 1
+        
         for individual in self.individuals:
             if self.optimization_mode == 'max':
-                score = (individual.score -stats['min_score'])
+                score = (individual.score)
             else:
-                score = (stats['max_score'] - individual.score - stats['min_score'])
+                score = (stats['max_score'] - individual.score) + 1
            
-            individual.scaled_score = score / ref
+            individual.scaled_score = float(score) / ref
         #todo: kinda cache ...
-        self.current_scaled_scores = [x.score for x in self.individuals]
+        self.current_scaled_scores = [x.scaled_score for x in self.individuals]
     
     
     def should_crossover(self, **options):
@@ -189,7 +193,7 @@ class Population(object):
             parents_candidates = self.select_individuals()
             parents = random.sample(parents_candidates, 2)
             new_individual = self.crossover_wrapper(parents, **options)
-            #mutatec
+            #mutate
             self.mutation_wrapper(new_individual, **options)
             new_individuals.append(new_individual)
             num_individuals += 1
