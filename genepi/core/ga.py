@@ -23,18 +23,6 @@ class GeneticAlgorithm(object):
     
     
     """
-    
-    population_size = 100
-    selection_method = None
-    step_callback = None
-    termination_criteria = None
-    termination_criteria_options = None
-    
-    fitness_evaluator = None
-    optimization_mode = 'min'
-    
-    crossover_probability = 0
-    
     def __init__(self, 
                     protogenome,
                     fitness_evaluator,
