@@ -14,11 +14,10 @@ except:
 class Genome(object):
     """Genome is a collection of genes."""
     
-    genes_dict = OrderedDict()
-    score = None
-    scaled_score = None
     
     def __init__(self, genes_dict, mutation_probability=0.1):
+        self.score = None
+        self.scaled_score = None
         self.genes_dict = genes_dict
         self.mutation_probability = mutation_probability
         

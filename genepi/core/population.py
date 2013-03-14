@@ -34,14 +34,13 @@ class Population(object):
     
     """
 
-    individuals = []
-    size = 100
 
     def __init__(self, protogenome, size=POPULATION_DEFAULT_SIZE, **options):
 
         
         self.protogenome = protogenome
         self.size = size
+        self.individuals = []
         
         self.options = options
         
@@ -182,6 +181,14 @@ class Population(object):
         new_individuals = []
         num_individuals = 0
         
+        randoms=[]
+        #todo: parametrize
+        if True:
+            for i in range(10):
+                randoms.append(self.protogenome.get_genome())
+        new_individuals.extend(randoms)
+        num_individuals=len(new_individuals)
+        
         if self.elitism:
             parents_candidates = select_from_top(self, self.num_parents)
             for individual in parents_candidates:
@@ -189,10 +196,10 @@ class Population(object):
                 new_individuals.append(new_individual)
                 num_individuals += 1
 
-        parents_candidates = self.select_individuals()            
+        
         while num_individuals < self.size:
+            parents_candidates = self.select_individuals()            
             #breeding and crossover
-            
             parents = random.sample(parents_candidates, 2)
             new_individual = self.crossover_wrapper(parents, **options)
             #mutate

@@ -3,6 +3,7 @@ This module contains the core selector methods provided by genepi.
 """
 
 import random
+from genepi.utils.random_helpers import weighted_choice
 
 
 def select_from_top(population, num_individuals):
@@ -27,31 +28,42 @@ def half_from_top(population, num_individuals):
     
     
 def roulette_select(population, num_individuals):
-    """ 
-    Roulette selection, implemented according to:
-    http://stackoverflow.com/questions/177271/roulette-selection-in-genetic-algorithms/177278#177278
-    """
+        
+    current_scores = population.current_scaled_scores
+    sum_score = sum(current_scores)
+    if sum_score == 0:
+        return random.sample(population.individuals, num_individuals)
     
-    current_scaled_scores = population.current_scaled_scores
-#    print current_scaled_scores
-#    total_sum = float(sum(current_scaled_scores))
-#    print "t", total_sum
-#    probs = [float(x.score)/total_sum for x in population.individuals]
-#    print probs
-#    print sum(probs)
-#    assert sum(probs) == 1.0
-#    raise
-    
-    # Generate probability intervals for each individual
-    probs = [sum(current_scaled_scores[:i+1]) for i in range(len(current_scaled_scores))]
-    if sum(probs) == 0:
-        return random.sample(population.individuals, 2)
+    probs = []
+    ub = 0
+    for i, score in enumerate(current_scores):
+        lb = ub
+        ub = lb + score
+        probs.append((lb, ub))
+        
     # Draw new population
     new_population = []
     for n in xrange(num_individuals):
-        r = random.random()
+        r = random.uniform(0, sum_score)
         for (i, individual) in enumerate(population.individuals):
-            if r <= probs[i]:
+            if r > probs[i][0] and r <= probs[i][1]:
                 new_population.append(individual)
                 break
     return new_population
+
+
+def simple_tournament_select(population, num_individuals):
+    tournament_size = int(population.size / 5)
+    new_population = []
+    scored_items = zip(population.individuals, population.current_scaled_scores)
+    for n in xrange(num_individuals):
+        items = []
+        for x in xrange(tournament_size):
+            items.append(weighted_choice(scored_items))
+        items.sort(population.cmp_individual)
+        new_population.append(items[0])
+    return new_population
+
+    
+    
+    
