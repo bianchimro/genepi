@@ -77,6 +77,7 @@ from genepi.core.stopcriteria import raw_score_stop
 def test_6():   
     #not yet converging!
     return
+    
     protogenes = []    
     for square in board.data.keys():
         row = square[0]
@@ -102,14 +103,14 @@ def test_6():
     protogenome = ProtoGenome(protogenes, mutation_probability=0.01)
     
     algo = GeneticAlgorithm(protogenome, sudoku_fitness, 
-        population_size = 100,
+        population_size = 200,
         #num_populations=1,
         #isolated_cycles=8,
         optimization_mode = 'min',
         num_parents = 2,
         #elitism = False,
         crossover_method = single_point_crossover,
-        crossover_probability=.9,
+        crossover_probability=.5,
         selection_method = simple_tournament_select,
         termination_criteria=[raw_score_stop], termination_criteria_options=[{'stop_score':0}])
     
