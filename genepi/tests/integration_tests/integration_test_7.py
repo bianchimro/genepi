@@ -28,9 +28,9 @@ def test_1():
     protogenome = ProtoGenome(protogenes, mutation_probability = 0.1) 
     
     algo = MultiGeneticAlgorithm(protogenome, fitness_function, 
-        population_size = 200,
+        population_size = 60,
         optimization_mode = 'min',
-        num_parents = 4,
+        num_parents = 2,
         crossover_method = single_point_crossover,
         selection_method = select_from_top,
         termination_criteria=[raw_score_stop], termination_criteria_options=[{'stop_score':0}])
