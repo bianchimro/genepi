@@ -90,7 +90,7 @@ class Population(object):
         self.individuals = new_individuals
         start_index = len(self.individuals)
         
-        for x in range(start_index, self.size):
+        for x in xrange(start_index, self.size):
             individual = self.protogenome.get_genome()
             self.individuals.append(individual)
     
@@ -182,13 +182,14 @@ class Population(object):
         num_individuals = 0
         
         randoms=[]
+        """
         #todo: parametrize
         if True:
             for i in range(10):
                 randoms.append(self.protogenome.get_genome())
         new_individuals.extend(randoms)
         num_individuals=len(new_individuals)
-        
+        """
         if self.elitism:
             parents_candidates = select_from_top(self, self.num_parents)
             for individual in parents_candidates:
@@ -229,7 +230,8 @@ class Population(object):
         """
         sorts individual using internal cmp_individual method and sets sorted flag to True
         """
-        self.individuals.sort(self.cmp_individual)
+        reverse = self.optimization_mode != 'min'
+        self.individuals.sort(key=lambda x: x.score, reverse=reverse)
         self.sorted = True
     
     

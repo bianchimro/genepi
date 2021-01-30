@@ -76,7 +76,7 @@ from genepi.core.stopcriteria import raw_score_stop
 
 def test_6():   
     #not yet converging!
-    return
+    #return
     
     protogenes = []    
     for square in board.data.keys():
@@ -100,10 +100,10 @@ def test_6():
         protogenes.append(ProtoGene(DiscreteGene, name, alleles=alleles))
     
 
-    protogenome = ProtoGenome(protogenes, mutation_probability=0.01)
+    protogenome = ProtoGenome(protogenes, mutation_probability=0.03)
     
     algo = GeneticAlgorithm(protogenome, sudoku_fitness, 
-        population_size = 200,
+        population_size = 100,
         #num_populations=1,
         #isolated_cycles=8,
         optimization_mode = 'min',

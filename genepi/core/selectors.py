@@ -37,8 +37,7 @@ def roulette_select(population, num_individuals):
     probs = []
     ub = 0
     for i, score in enumerate(current_scores):
-        lb = ub
-        ub = lb + score
+        lb, ub = ub, ub + score
         probs.append((lb, ub))
         
     # Draw new population
@@ -53,7 +52,7 @@ def roulette_select(population, num_individuals):
 
 
 def simple_tournament_select(population, num_individuals):
-    tournament_size = int(population.size / 5)
+    tournament_size = int(population.size / 10)
     new_population = []
     scored_items = zip(population.individuals, population.current_scaled_scores)
     for n in xrange(num_individuals):
